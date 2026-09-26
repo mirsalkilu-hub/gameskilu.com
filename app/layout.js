@@ -44,6 +44,12 @@ export default function RootLayout({ children }) {
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
+        {/* --- ADSTERRA GLOBAL SCRIPT (Popunder / In-Page Push) --- */}
+        <Script
+          type="text/javascript"
+          src="https://awkwardmonopoly.com/20/18/63/201863e19025f3e3a9bb97ff8f3d4bc0.js" // GANTI DENGAN URL SCRIPT ADSTERRA ANDA
+          strategy="afterInteractive"
+        />
       </head>
       <body className="min-h-full flex flex-col bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-black">
         {children}

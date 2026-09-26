@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import AdsterraBanner from "@/components/AdsterraBanner";
 import { 
   Gamepad2, 
   Download, 
@@ -399,6 +400,7 @@ export default function GamePortal() {
 
         {/* CONTENT ROUTER */}
         {currentView === 'public' && (
+          
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
             {currentHero && (
               <div className="relative rounded-3xl overflow-hidden border border-cyan-500/30 bg-slate-900/90 shadow-2xl shadow-cyan-950/60 min-h-[460px] flex flex-col justify-between group">
