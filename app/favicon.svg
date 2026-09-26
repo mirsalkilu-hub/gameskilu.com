@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="favGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F2FE" />
+      <stop offset="100%" stop-color="#9B51E0" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="64" height="64" rx="16" fill="#090D16" />
+  <rect width="60" height="60" x="2" y="2" rx="14" fill="none" stroke="url(#favGrad)" stroke-width="1.5" stroke-opacity="0.5" />
+  
+  <!-- Icon Simbol G-Gamepad -->
+  <path d="M 42 19 
+           C 25 11, 13 22, 13 37 
+           C 13 51, 26 60, 43 52 
+           C 50 49, 50 41, 39 41 
+           L 33 41" 
+        fill="none" 
+        stroke="url(#favGrad)" 
+        stroke-width="7" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
+        
+  <!-- Dot Aksen -->
+  <circle cx="44" cy="27" r="2.5" fill="#00F2FE" />
+</svg>
