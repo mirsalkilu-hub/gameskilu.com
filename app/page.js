@@ -170,7 +170,7 @@ export default function GamePortal() {
       date: new Date().toISOString().split('T')[0],
       image: newPost.image || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
       content: newPost.content,
-      download_url: newPost.type === 'game' ? newPost.downloadUrl : '',
+      download_url: newPost.downloadUrl,
       specs: newPost.type === 'game' ? {
         os: newPost.os || 'Windows 10/11 64-bit',
         cpu: newPost.cpu || 'Intel Core i5 / AMD Ryzen 5',
@@ -244,7 +244,7 @@ export default function GamePortal() {
       type: editForm.type,
       image: editForm.image,
       content: editForm.content,
-      download_url: editForm.type === 'game' ? editForm.downloadUrl : '',
+      download_url: editForm.downloadUrl,
       rating: Number(editForm.rating) || 5.0,
       specs: editForm.type === 'game' ? {
         os: editForm.os || 'Windows 10/11 64-bit',
@@ -942,6 +942,19 @@ export default function GamePortal() {
                   </div>
                 )}
 
+                {newPost.type === 'news' && (
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">News Link URL</label>
+                    <input
+                      type="url"
+                      value={newPost.downloadUrl}
+                      onChange={(e) => setNewPost({...newPost, downloadUrl: e.target.value})}
+                      placeholder="https://..."
+                      className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition"
+                    />
+                  </div>
+                )}
+
                 <div className="space-y-1.5">
                   <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">Content / Description</label>
                   <textarea 
@@ -1145,6 +1158,18 @@ export default function GamePortal() {
                     />
                   </div>
                 </div>
+
+                {editForm.type === 'news' && (
+                  <div>
+                    <label className="block text-xs font-medium text-slate-300 mb-1">News Link URL</label>
+                    <input
+                      type="url"
+                      value={editForm.downloadUrl}
+                      onChange={(e) => setEditForm({ ...editForm, downloadUrl: e.target.value })}
+                      className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+                )}
 
                 {editForm.type === 'game' && (
                   <div className="p-4 bg-slate-950 rounded-xl border border-purple-500/20 space-y-3">
@@ -1380,8 +1405,12 @@ export default function GamePortal() {
                         className="group relative flex items-center justify-center gap-3 w-full py-4 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-black font-black text-base rounded-2xl shadow-xl shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 transform active:scale-[0.99] overflow-hidden"
                       >
                         <span className="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
-                        <Download className="w-5 h-5 fill-black group-hover:animate-bounce" /> 
-                        <span>DOWNLOAD GAME NOW</span>
+                        {selectedPost.type === 'game' ? (
+                          <Download className="w-5 h-5 fill-black group-hover:animate-bounce" />
+                        ) : (
+                          <ExternalLink className="w-5 h-5" />
+                        )}
+                        <span>{selectedPost.type === 'game' ? 'DOWNLOAD GAME NOW' : 'BACA ARTIKEL LENGKAP'}</span>
                       </a>
                     </div>
                   )}
