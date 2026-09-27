@@ -465,13 +465,13 @@ export default function GamePortal() {
                         <Download className="w-4 h-4 fill-black" /> {currentHero.type === 'game' ? 'Get Game / Read Review' : 'Read Article'}
                       </button>
 
-                      <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-4 text-xs font-bold text-slate-300 bg-slate-900/80 px-4 py-3 rounded-xl border border-white/10 backdrop-blur-md">
-                        <div className="flex items-center gap-1 text-amber-400">
-                          <Star className="w-4 h-4 fill-amber-400" />
-                          <span>{currentHero.rating ? Number(currentHero.rating).toFixed(1) : '5.0'} / 5.0</span>
+                      <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-3 rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2.5 text-[11px] font-bold text-slate-300 backdrop-blur-md">
+                        <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-1 text-amber-300">
+                          <Star className="w-3.5 h-3.5 fill-amber-400" />
+                          <span>{currentHero.rating ? Number(currentHero.rating).toFixed(1) : '5.0'}</span>
                         </div>
                         <span className="text-slate-600">|</span>
-                        <span className="text-cyan-400">{currentHero.specs?.storage || 'Verified Content'}</span>
+                        <span className="text-cyan-400">{currentHero.specs?.storage || 'Verified'}</span>
                       </div>
                     </div>
                   </div>
@@ -600,15 +600,15 @@ export default function GamePortal() {
 
                       {/* BAHAGIAN KONGSI SOSIAL MEDIA & BACA DENGAN TELITI */}
                       <div className="pt-4 border-t border-slate-800 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1 text-amber-400 text-xs font-semibold">
-                            <Star className="w-4 h-4 fill-amber-400" />
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-amber-500/10 px-2 py-1 text-[11px] font-bold text-amber-300">
+                            <Star className="w-3.5 h-3.5 fill-amber-400" />
                             <span>{post.rating ? Number(post.rating).toFixed(1) : '5.0'}</span>
                           </div>
 
                           <button 
                             onClick={() => setSelectedPost(post)}
-                            className="flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300"
+                            className="flex items-center gap-1 text-[11px] font-bold text-cyan-400 hover:text-cyan-300"
                           >
                             Read More <ExternalLink className="w-3.5 h-3.5" />
                           </button>
