@@ -1,0 +1,40 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg2" x1="84" y1="58" x2="1104" y2="580" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#020617"/>
+      <stop offset="0.5" stop-color="#0B1120"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="300" y1="120" x2="900" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22D3EE" stop-opacity="0.45"/>
+      <stop offset="0.5" stop-color="#3B82F6" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#A855F7" stop-opacity="0.38"/>
+    </linearGradient>
+    <linearGradient id="brand2" x1="200" y1="170" x2="470" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A5F3FC"/>
+      <stop offset="0.5" stop-color="#67E8F9"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" rx="32" fill="url(#bg2)"/>
+  <path d="M115 517C331 387 505 297 670 239C808 192 993 176 1089 167V630H115V517Z" fill="url(#shine)" opacity="0.9"/>
+  <circle cx="1026" cy="131" r="170" fill="#38BDF8" fill-opacity="0.1"/>
+
+  <rect x="128" y="108" width="944" height="414" rx="30" fill="#08111F" fill-opacity="0.72" stroke="#67E8F9" stroke-opacity="0.28"/>
+  <rect x="178" y="156" width="240" height="240" rx="56" fill="url(#brand2)"/>
+  <rect x="214" y="192" width="168" height="168" rx="30" fill="#020817" fill-opacity="0.18"/>
+  <path d="M287 220H352C389.555 220 420 250.445 420 288V292C420 329.555 389.555 360 352 360H287V302H340C348.837 302 356 294.837 356 286V294C356 285.163 348.837 278 340 278H287V220Z" fill="#F8FAFC"/>
+  <path d="M287 220V360H287V220Z" fill="#F8FAFC" fill-opacity="0.88"/>
+
+  <text x="474" y="250" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="64" letter-spacing="5">gameskilu</text>
+  <text x="474" y="305" fill="#7DD3FC" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="22" letter-spacing="12">.com</text>
+  <text x="474" y="378" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="34">Latest Game News &amp; Download Picks</text>
+  <text x="474" y="424" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="22">Fresh releases, safe mirrors, and gaming updates</text>
+
+  <g>
+    <rect x="474" y="456" width="208" height="16" rx="8" fill="#22D3EE" fill-opacity="0.30"/>
+    <rect x="474" y="456" width="128" height="16" rx="8" fill="#22D3EE"/>
+    <text x="850" y="468" fill="#A7F3D0" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="18">VERIFIED</text>
+  </g>
+</svg>

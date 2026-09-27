@@ -1,0 +1,44 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="40" x2="1120" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#020817"/>
+      <stop offset="0.5" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="190" y1="120" x2="990" y2="510" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22D3EE" stop-opacity="0.3"/>
+      <stop offset="0.5" stop-color="#3B82F6" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#A855F7" stop-opacity="0.22"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="221" y1="170" x2="518" y2="473" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#67E8F9"/>
+      <stop offset="0.5" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" rx="32" fill="url(#bg)"/>
+  <circle cx="1030" cy="120" r="200" fill="#22D3EE" fill-opacity="0.08"/>
+  <circle cx="150" cy="515" r="190" fill="#A855F7" fill-opacity="0.12"/>
+
+  <rect x="120" y="90" width="960" height="450" rx="28" fill="url(#panel)" stroke="rgba(103,232,249,0.35)"/>
+
+  <g opacity="0.95">
+    <rect x="180" y="150" width="220" height="220" rx="48" fill="url(#brand)"/>
+    <rect x="214" y="182" width="152" height="156" rx="28" fill="#020817" fill-opacity="0.14"/>
+    <path d="M287 212H350C383.137 212 410 238.863 410 272V324C410 357.137 383.137 384 350 384H287V330H338C348.493 330 357 321.493 357 311V285C357 274.507 348.493 266 338 266H287V212ZM287 266H330V330H287V266Z" fill="#F8FAFC" fill-opacity="0.95"/>
+  </g>
+
+  <text x="470" y="255" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="72" letter-spacing="4">gameskilu</text>
+  <text x="470" y="310" fill="#7DD3FC" font-family="Arial, Helvetica, sans-serif" font-size="26" letter-spacing="10" font-weight="700">.com</text>
+
+  <text x="470" y="385" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="44">Gaming News &amp; PC Game Downloads</text>
+  <text x="470" y="445" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="24">Trusted, fast, and verified gaming content</text>
+
+  <g>
+    <rect x="470" y="485" width="210" height="18" rx="9" fill="#22D3EE" fill-opacity="0.38"/>
+    <rect x="470" y="485" width="146" height="18" rx="9" fill="#22D3EE"/>
+    <circle cx="1048" cy="495" r="8" fill="#34D399"/>
+    <text x="1068" y="503" fill="#A7F3D0" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">LIVE</text>
+  </g>
+</svg>
