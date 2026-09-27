@@ -616,44 +616,44 @@ export default function GamePortal() {
 
                         {/* BUTANG BAGIKAN KE SOSIAL MEDIA */}
                         <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800/60 text-slate-400 text-xs">
-                          <span className="text-[11px] font-medium flex items-center gap-1 text-slate-400">
+                          <span className="text-[11px] font-medium flex items-center gap-1.5 text-slate-400">
                             <Share2 className="w-3.5 h-3.5 text-cyan-400" /> Bagikan:
                           </span>
                           <div className="flex items-center gap-1.5">
                             <button 
                               onClick={(e) => handleShare('facebook', post, e)}
-                              className="p-1.5 bg-slate-950 hover:bg-blue-600 hover:text-white rounded-lg transition text-slate-300"
+                              className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700/80 bg-slate-950/90 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/20"
                               title="Bagikan ke Facebook"
                             >
-                              <span className="font-bold text-xs px-0.5">fb</span>
+                              <span className="font-black text-[10px]">f</span>
                             </button>
                             <button 
                               onClick={(e) => handleShare('twitter', post, e)}
-                              className="p-1.5 bg-slate-950 hover:bg-sky-500 hover:text-white rounded-lg transition text-slate-300"
+                              className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700/80 bg-slate-950/90 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-sky-500 hover:text-white hover:shadow-sky-500/20"
                               title="Bagikan ke Twitter / X"
                             >
-                              <span className="font-bold text-xs px-0.5">X</span>
+                              <span className="font-black text-[10px]">X</span>
                             </button>
                             <button 
                               onClick={(e) => handleShare('whatsapp', post, e)}
-                              className="p-1.5 bg-slate-950 hover:bg-emerald-600 hover:text-white rounded-lg transition text-slate-300"
+                              className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700/80 bg-slate-950/90 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-500 hover:text-white hover:shadow-emerald-500/20"
                               title="Bagikan ke WhatsApp"
                             >
                               <MessageCircle className="w-3.5 h-3.5" />
                             </button>
                             <button 
                               onClick={(e) => handleShare('telegram', post, e)}
-                              className="p-1.5 bg-slate-950 hover:bg-cyan-600 hover:text-white rounded-lg transition text-slate-300"
+                              className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700/80 bg-slate-950/90 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-cyan-500 hover:text-slate-950 hover:shadow-cyan-500/20"
                               title="Bagikan ke Telegram"
                             >
                               <Send className="w-3.5 h-3.5" />
                             </button>
                             <button 
                               onClick={(e) => handleShare('copy', post, e)}
-                              className="p-1.5 bg-slate-950 hover:bg-cyan-500 hover:text-black rounded-lg transition text-slate-300"
+                              className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700/80 bg-slate-950/90 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-violet-500 hover:text-white hover:shadow-violet-500/20"
                               title="Salin Pautan"
                             >
-                              {copiedId === post.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                              {copiedId === post.id ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
                             </button>
                           </div>
                         </div>

@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://gameskilu.com"),
   title: "gameskilu.com - Gaming News & PC Game Downloads",
   description:
     "Portal berita game terbaru, ulasan hardware, dan tempat download PC game gratis, aman, serta terverifikasi.",
@@ -27,6 +28,31 @@ export const metadata = {
     icon: "/favicon.png",
     shortcut: "/favicon.png",
     apple: "/favicon.png",
+  },
+  openGraph: {
+    type: "website",
+    url: "https://gameskilu.com",
+    siteName: "gameskilu.com",
+    title: "gameskilu.com - Gaming News & PC Game Downloads",
+    description:
+      "Portal berita game terbaru, ulasan hardware, dan tempat download PC game gratis, aman, serta terverifikasi.",
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80",
+        width: 1200,
+        height: 630,
+        alt: "gameskilu.com gaming news and download portal",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "gameskilu.com - Gaming News & PC Game Downloads",
+    description:
+      "Portal berita game terbaru, ulasan hardware, dan tempat download PC game gratis, aman, serta terverifikasi.",
+    images: [
+      "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80",
+    ],
   },
 };
 
