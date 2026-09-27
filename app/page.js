@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { supabase } from '@/lib/supabaseClient';
 import AdsterraBanner from "@/components/AdsterraBanner";
 import { 
-  Gamepad2, 
   Download, 
   Lock, 
   User, 
@@ -363,9 +363,7 @@ export default function GamePortal() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentView('public')}>
-                <div className="bg-gradient-to-tr from-cyan-500 via-blue-600 to-purple-600 p-2 rounded-xl shadow-lg shadow-cyan-500/30">
-                  <Gamepad2 className="w-6 h-6 text-black" />
-                </div>
+                <Image src="/gameskilu-mark.svg" alt="" width={40} height={40} className="h-10 w-10" />
                 <span className="text-xl font-black tracking-wider bg-gradient-to-r from-cyan-400 via-teal-300 to-purple-500 bg-clip-text text-transparent">
                   gameskilu<span className="text-white">.com</span>
                 </span>
@@ -1495,9 +1493,7 @@ export default function GamePortal() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-4 md:col-span-1">
               <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentView('public')}>
-                <div className="bg-gradient-to-tr from-cyan-500 to-purple-600 p-1.5 rounded-lg">
-                  <Gamepad2 className="w-5 h-5 text-black" />
-                </div>
+                <Image src="/gameskilu-mark.svg" alt="" width={32} height={32} className="h-8 w-8" />
                 <span className="text-lg font-black tracking-wider bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
                   gameskilu<span className="text-white">.com</span>
                 </span>
