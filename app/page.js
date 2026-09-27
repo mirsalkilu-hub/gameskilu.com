@@ -401,20 +401,20 @@ export default function GamePortal() {
         {/* CONTENT ROUTER */}
         {currentView === 'public' && (
           
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8 sm:space-y-10">
             {currentHero && (
-              <div className="relative rounded-3xl overflow-hidden border border-cyan-500/30 bg-slate-900/90 shadow-2xl shadow-cyan-950/60 min-h-[460px] flex flex-col justify-between group">
+              <div className="relative rounded-3xl overflow-hidden border border-cyan-500/30 bg-slate-900/90 shadow-xl shadow-cyan-950/50 min-h-[440px] sm:min-h-[460px] flex flex-col justify-between group">
                 <div className="absolute inset-0 z-0 overflow-hidden">
                   <img 
                     src={currentHero.image} 
                     alt={currentHero.title} 
-                    className="w-full h-full object-cover object-center scale-105 group-hover:scale-100 transition-transform duration-700 brightness-50"
+                    className="w-full h-full object-cover object-center scale-105 group-hover:scale-100 transition-transform duration-700 brightness-[0.62] saturate-[0.9]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent"></div>
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/40"></div>
                 </div>
 
-                <div className="relative z-10 p-6 md:p-8 flex flex-wrap items-center justify-between gap-4 border-b border-white/10">
+                <div className="relative z-10 p-4 sm:p-6 md:p-8 flex flex-wrap items-center justify-between gap-3 sm:gap-4 border-b border-white/10">
                   <div className="flex items-center gap-3">
                     <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
                       <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" /> {currentHero.category || 'FEATURED'}
@@ -430,29 +430,29 @@ export default function GamePortal() {
                   </div>
                 </div>
 
-                <div className="relative z-10 px-6 md:px-12 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div className="relative z-10 px-5 sm:px-8 md:px-12 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                   <div className="lg:col-span-8 space-y-4 text-left">
                     <div className="flex items-center gap-2 text-xs text-cyan-400 font-bold uppercase tracking-widest">
                       <Flame className="w-4 h-4 text-amber-400" /> Featured Release • {currentHero.game_genre || currentHero.gameGenre || 'GAMING'}
                     </div>
 
-                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none drop-shadow-md">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight break-words drop-shadow-md">
                       {currentHero.title}
                     </h1>
 
-                    <p className="text-slate-300 text-sm md:text-base max-w-2xl font-medium leading-relaxed drop-shadow line-clamp-2">
+                    <p className="text-slate-300 text-sm md:text-base max-w-2xl font-medium leading-relaxed drop-shadow line-clamp-2 md:line-clamp-3">
                       {currentHero.content}
                     </p>
 
                     <div className="flex flex-wrap items-center gap-4 pt-3">
                       <button 
                         onClick={() => setSelectedPost(currentHero)}
-                        className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-black font-black text-sm shadow-xl shadow-cyan-500/30 transition-all flex items-center gap-2"
+                        className="w-full sm:w-auto justify-center px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-black font-black text-sm shadow-xl shadow-cyan-500/30 transition-all flex items-center gap-2"
                       >
                         <Download className="w-4 h-4 fill-black" /> {currentHero.type === 'game' ? 'Get Game / Read Review' : 'Read Article'}
                       </button>
 
-                      <div className="flex items-center gap-4 text-xs font-bold text-slate-300 bg-slate-900/80 px-4 py-3 rounded-xl border border-white/10 backdrop-blur-md">
+                      <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-4 text-xs font-bold text-slate-300 bg-slate-900/80 px-4 py-3 rounded-xl border border-white/10 backdrop-blur-md">
                         <div className="flex items-center gap-1 text-amber-400">
                           <Star className="w-4 h-4 fill-amber-400" />
                           <span>{currentHero.rating ? Number(currentHero.rating).toFixed(1) : '5.0'} / 5.0</span>
@@ -469,10 +469,12 @@ export default function GamePortal() {
                     </p>
                     <div className="space-y-2">
                       {featuredPosts.map((item, idx) => (
-                        <div 
+                        <button
+                          type="button"
                           key={item.id}
                           onClick={() => setActiveHeroIdx(idx)}
-                          className={`p-3 rounded-xl cursor-pointer border transition-all duration-300 flex items-center gap-3 backdrop-blur-md ${
+                          aria-pressed={activeHeroIdx === idx}
+                          className={`w-full min-w-0 p-3 rounded-xl text-left border transition-all duration-300 flex items-center gap-3 backdrop-blur-md ${
                             activeHeroIdx === idx 
                               ? 'bg-cyan-500/20 border-cyan-400/80 shadow-lg shadow-cyan-500/10' 
                               : 'bg-slate-950/60 border-white/10 hover:bg-slate-900/80'
@@ -490,7 +492,7 @@ export default function GamePortal() {
                             <span className="text-[10px] text-slate-400 block truncate">{item.game_genre || item.gameGenre || item.category}</span>
                           </div>
                           <ChevronRight className={`w-4 h-4 ${activeHeroIdx === idx ? 'text-cyan-400' : 'text-slate-600'}`} />
-                        </div>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -512,13 +514,13 @@ export default function GamePortal() {
               </div>
             )}
 
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
-              <div className="flex flex-wrap gap-2 w-full md:w-auto">
+            <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between bg-slate-900/60 p-3 sm:p-4 rounded-2xl border border-slate-800">
+              <div className="flex flex-nowrap overflow-x-auto gap-2 w-full md:w-auto pb-1 md:pb-0">
                 {['All', 'News', 'Download Game', 'RPG', 'FPS'].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                    className={`shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
                       selectedCategory === cat 
                         ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/25' 
                         : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
@@ -529,7 +531,7 @@ export default function GamePortal() {
                 ))}
               </div>
 
-              <div className="relative w-full md:w-72">
+              <div className="relative w-full md:w-72 md:shrink-0">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input 
                   type="text" 
@@ -547,13 +549,13 @@ export default function GamePortal() {
                 <p className="text-xs font-semibold text-slate-400">Connecting to Supabase Database...</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {filteredPosts.map((post) => (
                   <div 
                     key={post.id} 
-                    className="bg-slate-900/80 rounded-2xl overflow-hidden border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 flex flex-col group shadow-xl"
+                    className="bg-slate-900/80 rounded-2xl overflow-hidden border border-slate-800 hover:border-cyan-400/60 transition-all duration-300 flex flex-col group shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-cyan-950/20"
                   >
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="relative h-44 sm:h-48 overflow-hidden bg-slate-800">
                       <img 
                         src={post.image} 
                         alt={post.title} 
@@ -568,7 +570,7 @@ export default function GamePortal() {
                       </div>
                     </div>
 
-                    <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                    <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-4">
                       <div>
                         <div className="flex items-center gap-2 text-xs text-slate-400 mb-2">
                           <span>{post.date}</span>
@@ -600,7 +602,7 @@ export default function GamePortal() {
                         </div>
 
                         {/* BUTANG BAGIKAN KE SOSIAL MEDIA */}
-                        <div className="flex items-center justify-between pt-2 border-t border-slate-800/60 text-slate-400 text-xs">
+                        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800/60 text-slate-400 text-xs">
                           <span className="text-[11px] font-medium flex items-center gap-1 text-slate-400">
                             <Share2 className="w-3.5 h-3.5 text-cyan-400" /> Bagikan:
                           </span>
@@ -1319,7 +1321,7 @@ export default function GamePortal() {
                     </div>
 
                     {/* BUTANG KONGSI MEDIA SOSIAL DI DALAM MODAL */}
-                    <div className="flex items-center gap-2 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 min-w-0 bg-slate-950 p-2 rounded-xl border border-slate-800">
                       <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
                         <Share2 className="w-3.5 h-3.5 text-cyan-400" /> Kongsi:
                       </span>
@@ -1455,7 +1457,6 @@ export default function GamePortal() {
               <ul className="space-y-2 text-xs">
                 <li><button onClick={() => setSelectedCategory('RPG')} className="hover:text-cyan-400 transition">RPG Games</button></li>
                 <li><button onClick={() => setSelectedCategory('FPS')} className="hover:text-cyan-400 transition">FPS Games</button></li>
-                <li><button onClick={() => setSelectedCategory('Open World')} className="hover:text-cyan-400 transition">Open World</button></li>
               </ul>
             </div>
 
