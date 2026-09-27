@@ -85,7 +85,7 @@ export default function GamePortal() {
 
     const title = `${post.title || 'gameskilu.com'} | gameskilu.com`;
     const description = post.content ? post.content.replace(/<[^>]*>/g, '').slice(0, 160) : 'Portal berita game terbaru dan link download PC game aman.';
-    const image = post.image || 'https://gameskilu.com/og-default.svg';
+    const image = post.image || 'https://gameskilu.com/og-default.png';
 
     document.title = title;
 
