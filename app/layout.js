@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script"; // 1. Import Script dari Next.js
 import "./globals.css";
 
@@ -53,6 +54,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-full flex flex-col bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-black">
         {children}
+        <Analytics />
       </body>
     </html>
   );
