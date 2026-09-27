@@ -335,7 +335,7 @@ export default function GamePortal() {
                       onClick={() => setCurrentView('admin-dashboard')}
                       className={`flex items-center gap-2 px-3 py-1.5 rounded-md border border-cyan-500/50 bg-cyan-950/30 text-cyan-400 hover:bg-cyan-900/50 transition`}
                     >
-                      <User className="w-4 h-4" /> Admin Dashboard
+                      <User className="w-3 h-3" /> Admin Dashboard
                     </button>
                     <button 
                       onClick={handleLogout}
@@ -350,7 +350,7 @@ export default function GamePortal() {
                     onClick={() => setCurrentView('admin-login')}
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-extrabold shadow-lg shadow-cyan-500/20 transition transform active:scale-95"
                   >
-                    <Lock className="w-4 h-4" /> Admin Login
+                    <Lock className="w-3 h-3" /> Admin Login
                   </button>
                 )}
               </div>
@@ -1473,14 +1473,14 @@ export default function GamePortal() {
                   onClick={() => setCurrentView('admin-login')}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-cyan-400 rounded-md transition"
                 >
-                  <Lock className="w-3.5 h-3.5" /> Admin Login
+                  <Lock className="w-3 h-3" /> Admin Login
                 </button>
               ) : (
                 <button 
                   onClick={() => setCurrentView('admin-dashboard')}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cyan-950 border border-cyan-500/40 text-xs font-semibold text-cyan-400 rounded-md transition"
                 >
-                  <User className="w-3.5 h-3.5" /> Admin Dashboard
+                  <User className="w-3 h-3" /> Admin Dashboard
                 </button>
               )}
             </div>
