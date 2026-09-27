@@ -6,36 +6,45 @@ export default function AdsterraAd() {
   const adRef = useRef(null);
 
   useEffect(() => {
-    if (!adRef.current) return;
+    if (!adRef.current || typeof window === 'undefined') return;
 
-    // Kosongkan container sebelum merender ulang
-    adRef.current.innerHTML = '';
+    const container = adRef.current;
+    container.innerHTML = '';
 
-    // Masukkan konfigurasi iklan Adsterra
-    const atOptions = document.createElement('script');
-    atOptions.type = 'text/javascript';
-    atOptions.innerHTML = `
-      atOptions = {
-        'key' : 'KODE_KEY_ADSTERRA_ANDA',
-        'format' : 'iframe',
-        'height' : 250,
-        'width' : 300,
-        'params' : {}
+    const adKey = process.env.NEXT_PUBLIC_ADSTERRA_KEY || 'KODE_KEY_ADSTERRA_ANDA';
+
+    if (!adKey || adKey === 'KODE_KEY_ADSTERRA_ANDA') {
+      return;
+    }
+
+    const configScript = document.createElement('script');
+    configScript.type = 'text/javascript';
+    configScript.text = `
+      window.atOptions = {
+        key: '${adKey}',
+        format: 'iframe',
+        height: 250,
+        width: 300,
+        params: {}
       };
     `;
 
-    // Masukkan skrip pengpanggil iklan
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = '//www.highperformanceformat.com/KODE_KEY_ADSTERRA_ANDA/invoke.js';
+    const invokeScript = document.createElement('script');
+    invokeScript.type = 'text/javascript';
+    invokeScript.async = true;
+    invokeScript.src = 'https://www.highperformanceformat.com/' + adKey + '/invoke.js';
 
-    adRef.current.appendChild(atOptions);
-    adRef.current.appendChild(script);
+    container.appendChild(configScript);
+    container.appendChild(invokeScript);
+
+    return () => {
+      container.innerHTML = '';
+    };
   }, []);
 
   return (
     <div className="my-4 flex justify-center text-center">
-      <div ref={adRef} />
+      <div ref={adRef} className="min-h-[250px]" />
     </div>
   );
 }
