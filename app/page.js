@@ -80,6 +80,38 @@ export default function GamePortal() {
     storage: ''
   });
 
+  const syncSocialMeta = (post) => {
+    if (typeof document === 'undefined') return;
+
+    const title = `${post.title || 'gameskilu.com'} | gameskilu.com`;
+    const description = post.content ? post.content.replace(/<[^>]*>/g, '').slice(0, 160) : 'Portal berita game terbaru dan link download PC game aman.';
+    const image = post.image || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80';
+
+    document.title = title;
+
+    const setMeta = (selector, content, attribute = 'content') => {
+      let tag = document.head.querySelector(selector);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('property', selector.replace('meta[property="', '').replace('"]', ''));
+        if (selector.startsWith('meta[name="')) {
+          tag.setAttribute('name', selector.replace('meta[name="', '').replace('"]', ''));
+        }
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute(attribute, content);
+    };
+
+    setMeta('meta[property="og:title"]', title);
+    setMeta('meta[property="og:description"]', description);
+    setMeta('meta[property="og:image"]', image);
+    setMeta('meta[property="og:url"]', `${window.location.origin}${window.location.pathname}?post=${post.id}`);
+    setMeta('meta[name="twitter:card"]', 'summary_large_image', 'content');
+    setMeta('meta[name="twitter:title"]', title);
+    setMeta('meta[name="twitter:description"]', description);
+    setMeta('meta[name="twitter:image"]', image);
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -105,6 +137,20 @@ export default function GamePortal() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!posts.length || typeof window === 'undefined') return;
+
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get('post');
+
+    if (!postId) return;
+
+    const currentPost = posts.find((post) => String(post.id) === String(postId));
+    if (currentPost) {
+      syncSocialMeta(currentPost);
+    }
+  }, [posts]);
+
   const featuredPosts = posts.slice(0, 3);
   const currentHero = featuredPosts[activeHeroIdx] || featuredPosts[0];
 
@@ -128,9 +174,13 @@ export default function GamePortal() {
   // FUNGSI PERKONGSIAN SOSIAL MEDIA
   const handleShare = (platform, post, e) => {
     if (e) e.stopPropagation();
-    
-    // Pautan asas ke laman web / postingan
-    const shareUrl = encodeURIComponent(window.location.origin + '?post=' + post.id);
+
+    const shareUrlObj = new URL(window.location.origin);
+    shareUrlObj.searchParams.set('post', String(post.id));
+    if (post.image) shareUrlObj.searchParams.set('shareImage', post.image);
+    if (post.title) shareUrlObj.searchParams.set('shareTitle', post.title);
+
+    const shareUrl = encodeURIComponent(shareUrlObj.toString());
     const shareText = encodeURIComponent(`Lihat postingan ini di gameskilu.com: ${post.title}`);
 
     let url = '';
@@ -152,7 +202,7 @@ export default function GamePortal() {
         window.open(url, '_blank');
         break;
       case 'copy':
-        navigator.clipboard.writeText(window.location.origin + '?post=' + post.id);
+        navigator.clipboard.writeText(shareUrlObj.toString());
         setCopiedId(post.id);
         setTimeout(() => setCopiedId(null), 2000);
         break;
