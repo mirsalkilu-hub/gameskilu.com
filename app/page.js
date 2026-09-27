@@ -350,11 +350,13 @@ export default function GamePortal() {
                 ) : (
                   <button 
                     onClick={() => setCurrentView('admin-login')}
-                    className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black shadow-lg shadow-cyan-500/20 transition transform active:scale-95"
+                    className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl border border-cyan-300/40 bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-950 shadow-[0_0_28px_rgba(34,211,238,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_36px_rgba(59,130,246,0.45)] active:scale-95"
                     aria-label="Admin Login"
                     title="Admin Login"
                   >
-                    <Lock className="w-3.5 h-3.5" />
+                    <span className="absolute inset-0 bg-white/15 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                    <Lock className="relative z-10 w-3.5 h-3.5" />
+                    <span className="relative z-10">Login</span>
                   </button>
                 )}
               </div>
@@ -668,13 +670,13 @@ export default function GamePortal() {
         {/* LOGIN VIEW */}
         {currentView === 'admin-login' && (
           <div className="max-w-md mx-auto px-4 py-16">
-            <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-xl space-y-6">
-              <div className="text-center space-y-2">
-                <div className="inline-block p-3 bg-cyan-500/10 rounded-full border border-cyan-500/30 mb-2">
-                  <Lock className="w-8 h-8 text-cyan-400" />
+            <div className="relative overflow-hidden bg-slate-900/80 border border-cyan-500/30 p-8 rounded-3xl shadow-[0_24px_80px_rgba(8,145,178,0.22)] backdrop-blur-md before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.12),_transparent_55%)] before:pointer-events-none space-y-6">
+              <div className="text-center space-y-3 relative z-10">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500/20 via-sky-500/10 to-blue-600/20 rounded-2xl border border-cyan-400/40 shadow-lg shadow-cyan-500/10">
+                  <Lock className="w-8 h-8 text-cyan-300" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Admin Login - gameskilu.com</h2>
-                <p className="text-xs text-slate-400">Enter your credentials to manage portal content</p>
+                <h2 className="text-2xl font-black text-white tracking-tight">Admin Login</h2>
+                <p className="text-xs text-slate-400 uppercase tracking-[0.2em]">gameskilu.com</p>
               </div>
 
               {loginError && (
@@ -710,9 +712,10 @@ export default function GamePortal() {
 
                 <button 
                   type="submit" 
-                  className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold rounded-lg shadow-lg shadow-cyan-500/20 transition"
+                  className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 px-4 py-3 text-sm font-black uppercase tracking-[0.2em] text-slate-950 shadow-[0_0_32px_rgba(34,211,238,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_42px_rgba(59,130,246,0.45)] active:scale-[0.99]"
                 >
-                  Sign In
+                  <span className="absolute inset-0 bg-white/15 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                  <span className="relative z-10">Sign In</span>
                 </button>
               </form>
             </div>
