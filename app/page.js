@@ -80,26 +80,29 @@ export default function GamePortal() {
     storage: ''
   });
 
-  // FETCH DATA
-  const fetchPosts = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('posts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setPosts(data || []);
-    } catch (err) {
-      console.error('Error fetching posts:', err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchPosts();
+    let isMounted = true;
+
+    const loadPosts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('posts')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        if (isMounted) setPosts(data || []);
+      } catch (err) {
+        if (isMounted) console.error('Error fetching posts:', err.message);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    loadPosts();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const featuredPosts = posts.slice(0, 3);
