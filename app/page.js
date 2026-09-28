@@ -22,6 +22,7 @@ import {
   Sparkles,
   Flame,
   ChevronRight,
+  ChevronLeft,
   TrendingUp,
   Loader2,
   Edit3,
@@ -50,6 +51,9 @@ export default function GamePortal() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [adminSearchQuery, setAdminSearchQuery] = useState('');
+  const [adminCategoryFilter, setAdminCategoryFilter] = useState('All');
+  const [adminPage, setAdminPage] = useState(1);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
 
@@ -372,6 +376,29 @@ export default function GamePortal() {
 
     return matchesCategory && matchesSearch;
   });
+
+  const adminCategories = [...new Set(posts.map((post) => post.category).filter(Boolean))];
+  const normalizedAdminSearch = adminSearchQuery.trim().toLowerCase();
+  const filteredAdminPosts = posts.filter((post) => {
+    const matchesCategory = adminCategoryFilter === 'All' || post.category === adminCategoryFilter;
+    const searchableValues = [
+      post.title,
+      post.content,
+      post.category,
+      post.game_genre || post.gameGenre,
+      post.type,
+      post.date,
+    ];
+    const matchesSearch = !normalizedAdminSearch || searchableValues.some((value) =>
+      String(value || '').toLowerCase().includes(normalizedAdminSearch)
+    );
+
+    return matchesCategory && matchesSearch;
+  });
+  const adminPageCount = Math.max(1, Math.ceil(filteredAdminPosts.length / 20));
+  const currentAdminPage = Math.min(adminPage, adminPageCount);
+  const adminPageStart = (currentAdminPage - 1) * 20;
+  const visibleAdminPosts = filteredAdminPosts.slice(adminPageStart, adminPageStart + 20);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-black flex flex-col justify-between">
@@ -1115,6 +1142,40 @@ export default function GamePortal() {
                 </div>
               </div>
 
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="relative w-full sm:max-w-sm">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                  <input
+                    type="search"
+                    value={adminSearchQuery}
+                    onChange={(event) => {
+                      setAdminSearchQuery(event.target.value);
+                      setAdminPage(1);
+                    }}
+                    placeholder="Cari judul, kategori, genre..."
+                    aria-label="Cari postingan admin"
+                    className="w-full rounded-xl border border-slate-800 bg-slate-950 py-2.5 pl-10 pr-4 text-sm text-slate-200 placeholder:text-slate-600 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/40"
+                  />
+                </div>
+                <label className="flex w-full items-center gap-2 text-xs font-semibold text-slate-400 sm:w-auto">
+                  <span className="shrink-0">Kategori</span>
+                  <select
+                    value={adminCategoryFilter}
+                    onChange={(event) => {
+                      setAdminCategoryFilter(event.target.value);
+                      setAdminPage(1);
+                    }}
+                    aria-label="Filter postingan berdasarkan kategori"
+                    className="min-w-0 flex-1 rounded-xl border border-slate-800 bg-slate-950 px-3 py-2.5 text-sm text-slate-200 focus:border-cyan-500 focus:outline-none sm:w-44 sm:flex-none"
+                  >
+                    <option value="All">Semua kategori</option>
+                    {adminCategories.map((category) => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
               <div className="overflow-x-auto rounded-2xl border border-slate-800/80 bg-slate-950/40">
                 <table className="w-full text-left text-sm text-slate-300">
                   <thead className="bg-slate-950 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
@@ -1128,14 +1189,14 @@ export default function GamePortal() {
                   </thead>
                   
                   <tbody className="divide-y divide-slate-800/60">
-                    {posts.length === 0 ? (
+                    {filteredAdminPosts.length === 0 ? (
                       <tr>
                         <td colSpan="5" className="p-8 text-center text-slate-500 text-xs font-medium">
-                          Belum ada postingan yang dibuat.
+                          {posts.length === 0 ? 'Belum ada postingan yang dibuat.' : 'Tidak ada postingan yang cocok dengan filter.'}
                         </td>
                       </tr>
                     ) : (
-                      posts.map((p) => (
+                      visibleAdminPosts.map((p) => (
                         <tr key={p.id} className="hover:bg-slate-800/40 transition-colors group">
                           <td className="p-4">
                             <div className="flex items-center gap-3 max-w-md">
@@ -1194,6 +1255,33 @@ export default function GamePortal() {
                     )}
                   </tbody>
                 </table>
+              </div>
+
+              <div className="flex flex-col gap-3 border-t border-slate-800 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-xs text-slate-500" aria-live="polite">
+                  Menampilkan {filteredAdminPosts.length === 0 ? 0 : adminPageStart + 1}–{Math.min(adminPageStart + 20, filteredAdminPosts.length)} dari {filteredAdminPosts.length} postingan
+                </p>
+                <div className="flex items-center justify-between gap-3 sm:justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setAdminPage((page) => Math.max(1, page - 1))}
+                    disabled={currentAdminPage === 1}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-700 px-3 text-xs font-semibold text-slate-300 transition hover:border-cyan-500/50 hover:text-cyan-300 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <ChevronLeft className="h-4 w-4" /> Sebelumnya
+                  </button>
+                  <span className="whitespace-nowrap text-xs font-medium text-slate-400">
+                    {currentAdminPage} / {adminPageCount}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setAdminPage((page) => Math.min(adminPageCount, page + 1))}
+                    disabled={currentAdminPage === adminPageCount}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-700 px-3 text-xs font-semibold text-slate-300 transition hover:border-cyan-500/50 hover:text-cyan-300 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Berikutnya <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             </div>
           </main>
