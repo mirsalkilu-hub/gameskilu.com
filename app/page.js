@@ -31,6 +31,8 @@ import {
   MessageCircle,
   Copy,
   Check,
+  CircleCheck,
+  CircleX,
   LayoutDashboard,
   FileText,
   Tag,
@@ -62,7 +64,18 @@ export default function GamePortal() {
   const [copiedId, setCopiedId] = useState(null);
 
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
-  const [loginError, setLoginError] = useState('');
+  const [notification, setNotification] = useState(null);
+
+  const notify = (message, type = 'success') => {
+    setNotification({ message, type });
+  };
+
+  useEffect(() => {
+    if (!notification) return;
+
+    const timeoutId = window.setTimeout(() => setNotification(null), 4500);
+    return () => window.clearTimeout(timeoutId);
+  }, [notification]);
 
   // State Form New Post
   const [newPost, setNewPost] = useState({
@@ -159,16 +172,17 @@ export default function GamePortal() {
     if (loginForm.username === 'admin' && loginForm.password === 'K@ira123') {
       setIsLoggedIn(true);
       setCurrentView('admin-dashboard');
-      setLoginError('');
       setLoginForm({ username: '', password: '' });
+      notify('Berhasil masuk sebagai admin.');
     } else {
-      setLoginError('Invalid Username or Password!');
+      notify('Username atau password tidak valid.', 'error');
     }
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setCurrentView('public');
+    notify('Anda telah keluar dari panel admin.');
   };
 
   // FUNGSI PERKONGSIAN SOSIAL MEDIA
@@ -202,9 +216,13 @@ export default function GamePortal() {
         window.open(url, '_blank');
         break;
       case 'copy':
-        navigator.clipboard.writeText(shareUrlObj.toString());
-        setCopiedId(post.id);
-        setTimeout(() => setCopiedId(null), 2000);
+        navigator.clipboard.writeText(shareUrlObj.toString())
+          .then(() => {
+            setCopiedId(post.id);
+            setTimeout(() => setCopiedId(null), 2000);
+            notify('Tautan berhasil disalin.');
+          })
+          .catch(() => notify('Tautan gagal disalin. Periksa izin browser.', 'error'));
         break;
       default:
         break;
@@ -259,10 +277,10 @@ export default function GamePortal() {
           gpu: '',
           storage: ''
         });
-        alert('Post published successfully to Supabase!');
+        notify('Postingan berhasil dipublikasikan.');
       }
     } catch (err) {
-      alert('Failed to save post: ' + err.message);
+      notify(`Gagal menyimpan postingan: ${err.message}`, 'error');
     }
   };
 
@@ -318,9 +336,9 @@ export default function GamePortal() {
 
       setPosts(posts.map(p => p.id === editForm.id ? { ...p, ...updatedPayload } : p));
       setEditingPost(null);
-      alert('Post updated successfully!');
+      notify('Postingan berhasil diperbarui.');
     } catch (err) {
-      alert('Failed to update post: ' + err.message);
+      notify(`Gagal memperbarui postingan: ${err.message}`, 'error');
     }
   };
 
@@ -335,8 +353,9 @@ export default function GamePortal() {
         if (error) throw error;
 
         setPosts(posts.filter(post => post.id !== id));
+        notify('Postingan berhasil dihapus.');
       } catch (err) {
-        alert('Failed to delete post: ' + err.message);
+        notify(`Gagal menghapus postingan: ${err.message}`, 'error');
       }
     }
   };
@@ -356,6 +375,52 @@ export default function GamePortal() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-black flex flex-col justify-between">
+      {notification && (
+        <div className="pointer-events-none fixed inset-x-0 top-4 z-[100] mx-auto flex w-[calc(100%-2rem)] max-w-md justify-end sm:inset-x-auto sm:right-6 sm:mx-0 sm:w-full">
+          <div
+            role={notification.type === 'error' ? 'alert' : 'status'}
+            aria-live={notification.type === 'error' ? 'assertive' : 'polite'}
+            aria-atomic="true"
+            className={`notification-enter pointer-events-auto relative flex w-full items-center gap-3 overflow-hidden rounded-2xl border bg-slate-950/95 p-4 pr-12 backdrop-blur-xl ${
+              notification.type === 'error'
+                ? 'border-rose-400/30 shadow-[0_16px_60px_rgba(244,63,94,0.18)]'
+                : 'border-emerald-400/30 shadow-[0_16px_60px_rgba(16,185,129,0.18)]'
+            }`}
+          >
+            <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${
+              notification.type === 'error'
+                ? 'border-rose-400/20 bg-rose-400/10 text-rose-300'
+                : 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
+            }`}>
+              {notification.type === 'error'
+                ? <CircleX className="h-5 w-5" />
+                : <CircleCheck className="h-5 w-5" />}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className={`text-[10px] font-extrabold uppercase tracking-[0.18em] ${
+                notification.type === 'error' ? 'text-rose-300' : 'text-emerald-300'
+              }`}>
+                {notification.type === 'error' ? 'Terjadi kendala' : 'Berhasil'}
+              </p>
+              <p className="mt-1 break-words text-sm font-medium leading-relaxed text-slate-100">
+                {notification.message}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setNotification(null)}
+              className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+              aria-label="Tutup notifikasi"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <span className={`notification-progress absolute bottom-0 left-0 h-0.5 w-full origin-left ${
+              notification.type === 'error' ? 'bg-rose-400' : 'bg-emerald-400'
+            }`} />
+          </div>
+        </div>
+      )}
+
       <div>
         {/* NAVBAR */}
         
@@ -726,12 +791,6 @@ export default function GamePortal() {
                 <h2 className="text-2xl font-black text-white tracking-tight">Admin Login</h2>
                 <p className="text-xs text-slate-400 uppercase tracking-[0.2em]">gameskilu.com</p>
               </div>
-
-              {loginError && (
-                <div className="p-3 bg-rose-950/50 border border-rose-500/50 rounded-lg text-xs text-rose-300">
-                  {loginError}
-                </div>
-              )}
 
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
