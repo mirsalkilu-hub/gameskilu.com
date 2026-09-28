@@ -76,6 +76,11 @@ export default function RootLayout({ children }) {
           />
         )}
 
+        <Script
+          src="https://awkwardmonopoly.com/20/18/63/201863e19025f3e3a9bb97ff8f3d4bc0.js"
+          strategy="afterInteractive"
+        />
+
         {adsterraScriptUrl && (
           <Script
             src={adsterraScriptUrl}
