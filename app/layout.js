@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -57,7 +58,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+  const adsenseClient =
+    process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-7149552867300544";
   const adsterraScriptUrl = process.env.NEXT_PUBLIC_ADSTERRA_SCRIPT_URL;
 
   return (
@@ -67,17 +69,17 @@ export default function RootLayout({ children }) {
     >
       <head>
         {adsenseClient && (
-          <script
-            async
+          <Script
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
             crossOrigin="anonymous"
+            strategy="afterInteractive"
           />
         )}
 
         {adsterraScriptUrl && (
-          <script
-            type="text/javascript"
+          <Script
             src={adsterraScriptUrl}
+            strategy="afterInteractive"
           />
         )}
       </head>
