@@ -464,6 +464,7 @@ export default function GamePortal() {
 
     return matchesCategory && matchesSearch;
   });
+  const visiblePosts = filteredPosts.slice(0, 30);
 
   const adminCategories = [...new Set(posts.map((post) => post.category).filter(Boolean))];
   const normalizedAdminSearch = adminSearchQuery.trim().toLowerCase();
@@ -795,7 +796,7 @@ export default function GamePortal() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {filteredPosts.map((post) => (
+                {visiblePosts.map((post) => (
                   <div 
                     key={post.id} 
                     className="bg-slate-900/80 rounded-2xl overflow-hidden border border-slate-800 hover:border-cyan-400/60 transition-all duration-300 flex flex-col group shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-cyan-950/20"
