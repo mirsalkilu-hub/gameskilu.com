@@ -26,8 +26,8 @@ export const metadata = {
     "gameskilu.com",
   ],
   icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
+    icon: "/gameskilu-mark.svg",
+    shortcut: "/gameskilu-mark.svg",
     apple: "/favicon.png",
   },
   openGraph: {
