@@ -42,12 +42,12 @@
     <path d="M96 169h9m-4-4v9m49-5h4m-2-2v4" stroke="#58E6F1" stroke-width="3" stroke-linecap="round"/>
   </svg>
 
-  <text x="450" y="220" fill="#56DDEA" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" letter-spacing="5">PORTAL GAMING</text>
+  <text x="450" y="220" fill="#56DDEA" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" letter-spacing="5">GAMING PORTAL</text>
   <text x="446" y="307" fill="#F5F2FF" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="800">gameskilu</text>
   <text x="790" y="307" fill="#55DDEB" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">.com</text>
   <path d="M450 337h540" stroke="#FFFFFF" stroke-opacity=".12"/>
-  <text x="450" y="393" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">Berita dan rilisan game terbaru</text>
-  <text x="450" y="439" fill="#C8C7D8" font-family="Arial, Helvetica, sans-serif" font-size="27">Download PC terverifikasi</text>
+  <text x="450" y="393" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">Latest gaming news and releases</text>
+  <text x="450" y="439" fill="#C8C7D8" font-family="Arial, Helvetica, sans-serif" font-size="27">Verified PC game downloads</text>
   <rect x="450" y="477" width="202" height="42" rx="21" fill="#0C3447" stroke="#35D8E8" stroke-opacity=".45"/>
   <text x="476" y="504" fill="#9AF4F4" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" letter-spacing="1.5">GAMESKILU.COM</text>
 </svg>

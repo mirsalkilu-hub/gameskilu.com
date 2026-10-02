@@ -64,14 +64,14 @@ export default function GamePortal() {
   const [selectedPost, setSelectedPost] = useState(null);
   const trackedSharedPostId = React.useRef(null);
 
-  // State Modal Edit Post
+  // Edit post modal state
   const [editingPost, setEditingPost] = useState(null);
   const [editForm, setEditForm] = useState(null);
 
   // State Hero Switcher
   const [activeHeroIdx, setActiveHeroIdx] = useState(0);
 
-  // State Salin Pautan
+  // Copy link state
   const [copiedId, setCopiedId] = useState(null);
 
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
@@ -108,7 +108,7 @@ export default function GamePortal() {
     if (typeof document === 'undefined') return;
 
     const title = `${post.title || 'gameskilu.com'} | gameskilu.com`;
-    const description = post.content ? post.content.replace(/<[^>]*>/g, '').slice(0, 160) : 'Portal berita game terbaru dan link download PC game aman.';
+    const description = post.content ? post.content.replace(/<[^>]*>/g, '').slice(0, 160) : 'The latest gaming news and safe PC game downloads.';
     const image = 'https://gameskilu.com/og-default.png?v=2';
 
     document.title = title;
@@ -221,19 +221,19 @@ export default function GamePortal() {
       setIsLoggedIn(true);
       setCurrentView('admin-dashboard');
       setLoginForm({ username: '', password: '' });
-      notify('Berhasil masuk sebagai admin.');
+      notify('Signed in as admin.');
     } else {
-      notify('Username atau password tidak valid.', 'error');
+      notify('Invalid username or password.', 'error');
     }
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setCurrentView('public');
-    notify('Anda telah keluar dari panel admin.');
+    notify('You have signed out of the admin panel.');
   };
 
-  // FUNGSI PERKONGSIAN SOSIAL MEDIA
+  // Social sharing
   const handleShare = (platform, post, e) => {
     if (e) e.stopPropagation();
 
@@ -241,7 +241,7 @@ export default function GamePortal() {
     shareUrlObj.searchParams.set('post', String(post.id));
 
     const shareUrl = encodeURIComponent(shareUrlObj.toString());
-    const shareText = encodeURIComponent(`Lihat postingan ini di gameskilu.com: ${post.title}`);
+    const shareText = encodeURIComponent(`Check out this post on gameskilu.com: ${post.title}`);
 
     let url = '';
     switch (platform) {
@@ -266,16 +266,16 @@ export default function GamePortal() {
           .then(() => {
             setCopiedId(post.id);
             setTimeout(() => setCopiedId(null), 2000);
-            notify('Tautan berhasil disalin.');
+            notify('Link copied.');
           })
-          .catch(() => notify('Tautan gagal disalin. Periksa izin browser.', 'error'));
+          .catch(() => notify('Unable to copy link. Check your browser permissions.', 'error'));
         break;
       default:
         break;
     }
   };
 
-  // TAMBAH POSTINGAN KE SUPABASE
+  // Create a post in Supabase
   const handleCreatePost = async (e) => {
     e.preventDefault();
 
@@ -323,14 +323,14 @@ export default function GamePortal() {
           gpu: '',
           storage: ''
         });
-        notify('Postingan berhasil dipublikasikan.');
+        notify('Post published successfully.');
       }
     } catch (err) {
-      notify(`Gagal menyimpan postingan: ${err.message}`, 'error');
+      notify(`Failed to save post: ${err.message}`, 'error');
     }
   };
 
-  // MODAL EDIT
+  // Edit modal
   const handleOpenEditModal = (post) => {
     setEditingPost(post);
     setEditForm({
@@ -382,9 +382,9 @@ export default function GamePortal() {
 
       setPosts(posts.map(p => p.id === editForm.id ? { ...p, ...updatedPayload } : p));
       setEditingPost(null);
-      notify('Postingan berhasil diperbarui.');
+      notify('Post updated successfully.');
     } catch (err) {
-      notify(`Gagal memperbarui postingan: ${err.message}`, 'error');
+      notify(`Failed to update post: ${err.message}`, 'error');
     }
   };
 
@@ -399,9 +399,9 @@ export default function GamePortal() {
         if (error) throw error;
 
         setPosts(posts.filter(post => post.id !== id));
-        notify('Postingan berhasil dihapus.');
+        notify('Post deleted successfully.');
       } catch (err) {
-        notify(`Gagal menghapus postingan: ${err.message}`, 'error');
+        notify(`Failed to delete post: ${err.message}`, 'error');
       }
     }
   };
@@ -469,7 +469,7 @@ export default function GamePortal() {
               <p className={`text-[10px] font-extrabold uppercase tracking-[0.18em] ${
                 notification.type === 'error' ? 'text-rose-300' : 'text-emerald-300'
               }`}>
-                {notification.type === 'error' ? 'Terjadi kendala' : 'Berhasil'}
+                {notification.type === 'error' ? 'Something went wrong' : 'Success'}
               </p>
               <p className="mt-1 break-words text-sm font-medium leading-relaxed text-slate-100">
                 {notification.message}
@@ -479,7 +479,7 @@ export default function GamePortal() {
               type="button"
               onClick={() => setNotification(null)}
               className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-              aria-label="Tutup notifikasi"
+              aria-label="Dismiss notification"
             >
               <X className="h-4 w-4" />
             </button>
@@ -648,12 +648,12 @@ export default function GamePortal() {
                       </button>
 
                       <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-3 rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2.5 text-[11px] font-bold text-slate-300 backdrop-blur-md">
-                        <div title="Rating popularitas berdasarkan jumlah klik" className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-1 text-amber-300">
+                        <div title="Popularity rating based on clicks" className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-1 text-amber-300">
                           <Star className="w-3.5 h-3.5 fill-amber-400" />
                           <span>{getPostPopularityRating(currentHero).toFixed(2)}</span>
                         </div>
                         <span className="text-slate-600">|</span>
-                        <span className="inline-flex items-center gap-1 text-cyan-300" title="Jumlah klik postingan">
+                        <span className="inline-flex items-center gap-1 text-cyan-300" title="Post click count">
                           <Eye className="w-3.5 h-3.5" /> {formatPostClickCount(currentHero)}
                         </span>
                         <span className="text-slate-600">|</span>
@@ -784,15 +784,15 @@ export default function GamePortal() {
                         </p>
                       </div>
 
-                      {/* BAHAGIAN KONGSI SOSIAL MEDIA & BACA DENGAN TELITI */}
+                      {/* Social sharing and post actions */}
                       <div className="pt-4 border-t border-slate-800 space-y-3">
                         <div className="flex items-center justify-between gap-2">
-                          <div title="Rating popularitas berdasarkan jumlah klik" className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-amber-500/10 px-2 py-1 text-[11px] font-bold text-amber-300">
+                          <div title="Popularity rating based on clicks" className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-amber-500/10 px-2 py-1 text-[11px] font-bold text-amber-300">
                             <Star className="w-3.5 h-3.5 fill-amber-400" />
                             <span>{getPostPopularityRating(post).toFixed(2)}</span>
                           </div>
 
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400" title="Jumlah klik postingan">
+                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400" title="Post click count">
                             <Eye className="w-3.5 h-3.5 text-cyan-400" /> {formatPostClickCount(post)}
                           </span>
 
@@ -804,44 +804,44 @@ export default function GamePortal() {
                           </button>
                         </div>
 
-                        {/* BUTANG BAGIKAN KE SOSIAL MEDIA */}
+                        {/* Social sharing buttons */}
                         <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800/60 text-slate-400 text-xs">
                           <span className="text-[11px] font-medium flex items-center gap-1.5 text-slate-400">
-                            <Share2 className="w-3.5 h-3.5 text-cyan-400" /> Bagikan:
+                            <Share2 className="w-3.5 h-3.5 text-cyan-400" /> Share:
                           </span>
                           <div className="flex items-center gap-1.5">
                             <button 
                               onClick={(e) => handleShare('facebook', post, e)}
                               className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700/80 bg-slate-950/90 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 hover:text-white hover:shadow-blue-500/20"
-                              title="Bagikan ke Facebook"
+                              title="Share on Facebook"
                             >
                               <span className="font-black text-[10px]">f</span>
                             </button>
                             <button 
                               onClick={(e) => handleShare('twitter', post, e)}
                               className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700/80 bg-slate-950/90 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-sky-500 hover:text-white hover:shadow-sky-500/20"
-                              title="Bagikan ke Twitter / X"
+                              title="Share on Twitter / X"
                             >
                               <span className="font-black text-[10px]">X</span>
                             </button>
                             <button 
                               onClick={(e) => handleShare('whatsapp', post, e)}
                               className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700/80 bg-slate-950/90 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-500 hover:text-white hover:shadow-emerald-500/20"
-                              title="Bagikan ke WhatsApp"
+                              title="Share on WhatsApp"
                             >
                               <MessageCircle className="w-3.5 h-3.5" />
                             </button>
                             <button 
                               onClick={(e) => handleShare('telegram', post, e)}
                               className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700/80 bg-slate-950/90 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-cyan-500 hover:text-slate-950 hover:shadow-cyan-500/20"
-                              title="Bagikan ke Telegram"
+                              title="Share on Telegram"
                             >
                               <Send className="w-3.5 h-3.5" />
                             </button>
                             <button 
                               onClick={(e) => handleShare('copy', post, e)}
                               className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700/80 bg-slate-950/90 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-violet-500 hover:text-white hover:shadow-violet-500/20"
-                              title="Salin Pautan"
+                              title="Copy Link"
                             >
                               {copiedId === post.id ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
                             </button>
@@ -906,7 +906,7 @@ export default function GamePortal() {
           </div>
         )}
 
-        {/* ADMIN DASHBOARD VIEW (DIPERBAIKI) */}
+        {/* Admin dashboard view */}
         {currentView === 'admin-dashboard' && isLoggedIn && (
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
             {/* DASHBOARD HEADER */}
@@ -923,7 +923,7 @@ export default function GamePortal() {
                     Administrator <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Dashboard</span>
                   </h1>
                   <p className="text-slate-400 text-sm">
-                    Kelola berita, pembaruan game, dan link unduhan gameskilu.com secara real-time.
+                    Manage gaming news, updates, and download links on gameskilu.com in real time.
                   </p>
                 </div>
 
@@ -944,7 +944,7 @@ export default function GamePortal() {
                   </div>
                   <div>
                     <div className="text-2xl font-black text-white">{posts.length}</div>
-                    <div className="text-xs text-slate-400 font-medium">Total Konten Terpublikasi</div>
+                    <div className="text-xs text-slate-400 font-medium">Total Published Posts</div>
                   </div>
                 </div>
 
@@ -974,7 +974,7 @@ export default function GamePortal() {
               </div>
             </div>
 
-            {/* CREATE POST FORM DENGAN INPUT GPU DAN STORAGE */}
+            {/* Create post form with GPU and storage fields */}
             <div className="bg-slate-900/90 border border-slate-800 p-6 md:p-8 rounded-3xl shadow-xl space-y-6">
               <div className="flex items-center justify-between border-b border-slate-800 pb-4">
                 <div className="flex items-center gap-3">
@@ -982,8 +982,8 @@ export default function GamePortal() {
                     <Plus className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-white">Buat Postingan Baru</h2>
-                    <p className="text-xs text-slate-400">Tambahkan berita atau tautan download game ke Supabase</p>
+                    <h2 className="text-xl font-bold text-white">Create a New Post</h2>
+                    <p className="text-xs text-slate-400">Add news or a game download link to Supabase.</p>
                   </div>
                 </div>
                 <span className="text-xs font-semibold px-3 py-1 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-400 hidden sm:inline-block">
@@ -1055,7 +1055,7 @@ export default function GamePortal() {
                   </div>
                 </div>
 
-                {/* AREA SPESIFIKASI GAME */}
+                {/* Game specifications */}
                 {newPost.type === 'game' && (
                   <div className="p-5 bg-slate-950 rounded-2xl border border-purple-500/30 space-y-4 shadow-lg shadow-purple-950/20">
                     <div className="flex items-center gap-2 border-b border-purple-500/20 pb-3">
@@ -1162,7 +1162,7 @@ export default function GamePortal() {
                     required
                     value={newPost.content}
                     onChange={(e) => setNewPost({...newPost, content: e.target.value})}
-                    placeholder="Tulis ulasan berita lengkap atau panduan instalasi..."
+                    placeholder="Write a full news article, review, or installation guide..."
                     className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition leading-relaxed"
                   ></textarea>
                 </div>
@@ -1178,14 +1178,14 @@ export default function GamePortal() {
               </form>
             </div>
 
-            {/* TABEL MANAJEMEN POSTINGAN */}
+            {/* Post management table */}
             <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 md:p-8 space-y-5 shadow-xl">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
                 <div>
                   <h2 className="text-xl font-bold text-white flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-cyan-400" /> Active Content Library
                   </h2>
-                  <p className="text-xs text-slate-400">Daftar postingan aktif yang tersimpan di database Supabase</p>
+                  <p className="text-xs text-slate-400">Active posts stored in the Supabase database.</p>
                 </div>
                 <div className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-400 text-xs font-mono">
                   Total Items: {posts.length}
@@ -1202,23 +1202,23 @@ export default function GamePortal() {
                       setAdminSearchQuery(event.target.value);
                       setAdminPage(1);
                     }}
-                    placeholder="Cari judul, kategori, genre..."
-                    aria-label="Cari postingan admin"
+                    placeholder="Search title, category, or genre..."
+                    aria-label="Search admin posts"
                     className="w-full rounded-xl border border-slate-800 bg-slate-950 py-2.5 pl-10 pr-4 text-sm text-slate-200 placeholder:text-slate-600 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/40"
                   />
                 </div>
                 <label className="flex w-full items-center gap-2 text-xs font-semibold text-slate-400 sm:w-auto">
-                  <span className="shrink-0">Kategori</span>
+                  <span className="shrink-0">Category</span>
                   <select
                     value={adminCategoryFilter}
                     onChange={(event) => {
                       setAdminCategoryFilter(event.target.value);
                       setAdminPage(1);
                     }}
-                    aria-label="Filter postingan berdasarkan kategori"
+                    aria-label="Filter posts by category"
                     className="min-w-0 flex-1 rounded-xl border border-slate-800 bg-slate-950 px-3 py-2.5 text-sm text-slate-200 focus:border-cyan-500 focus:outline-none sm:w-44 sm:flex-none"
                   >
-                    <option value="All">Semua kategori</option>
+                    <option value="All">All categories</option>
                     {adminCategories.map((category) => (
                       <option key={category} value={category}>{category}</option>
                     ))}
@@ -1243,7 +1243,7 @@ export default function GamePortal() {
                     {filteredAdminPosts.length === 0 ? (
                       <tr>
                         <td colSpan="6" className="p-8 text-center text-slate-500 text-xs font-medium">
-                          {posts.length === 0 ? 'Belum ada postingan yang dibuat.' : 'Tidak ada postingan yang cocok dengan filter.'}
+                          {posts.length === 0 ? 'No posts have been created yet.' : 'No posts match your filters.'}
                         </td>
                       </tr>
                     ) : (
@@ -1315,7 +1315,7 @@ export default function GamePortal() {
 
               <div className="flex flex-col gap-3 border-t border-slate-800 pt-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-xs text-slate-500" aria-live="polite">
-                  Menampilkan {filteredAdminPosts.length === 0 ? 0 : adminPageStart + 1}–{Math.min(adminPageStart + 20, filteredAdminPosts.length)} dari {filteredAdminPosts.length} postingan
+                  Showing {filteredAdminPosts.length === 0 ? 0 : adminPageStart + 1}–{Math.min(adminPageStart + 20, filteredAdminPosts.length)} of {filteredAdminPosts.length} posts
                 </p>
                 <div className="flex items-center justify-between gap-3 sm:justify-end">
                   <button
@@ -1324,7 +1324,7 @@ export default function GamePortal() {
                     disabled={currentAdminPage === 1}
                     className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-700 px-3 text-xs font-semibold text-slate-300 transition hover:border-cyan-500/50 hover:text-cyan-300 disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    <ChevronLeft className="h-4 w-4" /> Sebelumnya
+                    <ChevronLeft className="h-4 w-4" /> Previous
                   </button>
                   <span className="whitespace-nowrap text-xs font-medium text-slate-400">
                     {currentAdminPage} / {adminPageCount}
@@ -1335,7 +1335,7 @@ export default function GamePortal() {
                     disabled={currentAdminPage === adminPageCount}
                     className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-700 px-3 text-xs font-semibold text-slate-300 transition hover:border-cyan-500/50 hover:text-cyan-300 disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    Berikutnya <ChevronRight className="h-4 w-4" />
+                    Next <ChevronRight className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -1522,7 +1522,7 @@ export default function GamePortal() {
           </div>
         )}
 
-        {/* DETAIL MODAL DENGAN BUTANG KONGSI */}
+        {/* Post details and sharing modal */}
         {selectedPost && (
           <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
             <div className="bg-slate-900/95 border border-cyan-500/30 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl shadow-cyan-950/80 flex flex-col relative max-h-[92vh]">
@@ -1575,13 +1575,13 @@ export default function GamePortal() {
 
                   <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
                       <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
-                      <div title="Rating popularitas berdasarkan jumlah klik" className="flex items-center gap-1.5 text-amber-400">
+                      <div title="Popularity rating based on clicks" className="flex items-center gap-1.5 text-amber-400">
                         <Star className="w-4 h-4 fill-amber-400" />
                         <span className="text-sm">{getPostPopularityRating(selectedPost).toFixed(2)} / 5.00</span>
                       </div>
                       <span className="text-slate-700">•</span>
-                      <span className="text-cyan-300 flex items-center gap-1.5" title="Jumlah klik postingan">
-                        <Eye className="w-4 h-4" /> {formatPostClickCount(selectedPost)} klik
+                      <span className="text-cyan-300 flex items-center gap-1.5" title="Post click count">
+                        <Eye className="w-4 h-4" /> {formatPostClickCount(selectedPost)} clicks
                       </span>
                       <span className="text-slate-700">•</span>
                       <span className="text-emerald-400 flex items-center gap-1">
@@ -1589,10 +1589,10 @@ export default function GamePortal() {
                       </span>
                     </div>
 
-                    {/* BUTANG KONGSI MEDIA SOSIAL DI DALAM MODAL */}
+                    {/* Social sharing buttons in the modal */}
                     <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 min-w-0 bg-slate-950 p-2 rounded-xl border border-slate-800">
                       <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
-                        <Share2 className="w-3.5 h-3.5 text-cyan-400" /> Kongsi:
+                        <Share2 className="w-3.5 h-3.5 text-cyan-400" /> Share:
                       </span>
                       <button 
                         onClick={(e) => handleShare('facebook', selectedPost, e)}
@@ -1622,7 +1622,7 @@ export default function GamePortal() {
                         onClick={(e) => handleShare('copy', selectedPost, e)}
                         className="px-2 py-1 bg-slate-900 hover:bg-cyan-500 hover:text-black text-slate-300 rounded-lg text-xs font-bold transition flex items-center gap-1"
                       >
-                        {copiedId === selectedPost.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />} Salin
+                        {copiedId === selectedPost.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />} Copy Link
                       </button>
                     </div>
                   </div>
@@ -1681,7 +1681,7 @@ export default function GamePortal() {
                         ) : (
                           <ExternalLink className="w-5 h-5" />
                         )}
-                        <span>{selectedPost.type === 'game' ? 'DOWNLOAD GAME NOW' : 'BACA ARTIKEL LENGKAP'}</span>
+                        <span>{selectedPost.type === 'game' ? 'DOWNLOAD GAME NOW' : 'READ FULL ARTICLE'}</span>
                       </a>
                     </div>
                   )}

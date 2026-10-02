@@ -23,11 +23,11 @@ export default function AdsterraBanner() {
         };
       `;
 
-      // Script pemicu Adsterra
+      // Adsterra trigger script
       invokeScript.type = "text/javascript";
       invokeScript.src = "https://awkwardmonopoly.com/80bb8b39622cb8541d677c75167d703d/invoke.js";
 
-      // Memasukkan script ke dalam container div
+      // Append the scripts to the container div
       adRef.current.appendChild(confScript);
       adRef.current.appendChild(invokeScript);
     }

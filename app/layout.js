@@ -17,11 +17,11 @@ export const metadata = {
   metadataBase: new URL("https://gameskilu.com"),
   title: "gameskilu.com - Gaming News & PC Game Downloads",
   description:
-    "Portal berita game terbaru, ulasan hardware, dan tempat download PC game gratis, aman, serta terverifikasi.",
+    "The latest gaming news, hardware reviews, and safe, verified PC game downloads.",
   keywords: [
     "gameskilu",
-    "download game pc",
-    "berita game",
+    "pc game downloads",
+    "gaming news",
     "game news",
     "gameskilu.com",
   ],
@@ -36,7 +36,7 @@ export const metadata = {
     siteName: "gameskilu.com",
     title: "gameskilu.com - Gaming News & PC Game Downloads",
     description:
-      "Portal berita game terbaru, ulasan hardware, dan tempat download PC game gratis, aman, serta terverifikasi.",
+      "The latest gaming news, hardware reviews, and safe, verified PC game downloads.",
     images: [
       {
         url: "https://gameskilu.com/og-default.png?v=2",
@@ -50,7 +50,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "gameskilu.com - Gaming News & PC Game Downloads",
     description:
-      "Portal berita game terbaru, ulasan hardware, dan tempat download PC game gratis, aman, serta terverifikasi.",
+      "The latest gaming news, hardware reviews, and safe, verified PC game downloads.",
     images: [
       "https://gameskilu.com/og-default.png?v=2",
     ],
@@ -64,7 +64,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html
-      lang="id"
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <head>
