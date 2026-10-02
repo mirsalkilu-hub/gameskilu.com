@@ -647,14 +647,14 @@ export default function GamePortal() {
                       </button>
 
                       <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-3 rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2.5 text-[11px] font-bold text-slate-300 backdrop-blur-md">
-                        <span className="inline-flex items-center gap-1 text-cyan-300" title="Post click count">
-                          <Eye className="w-3.5 h-3.5" /> {formatPostClickCount(currentHero)}
-                        </span>
-                        <span className="text-slate-600">|</span>
                         <div title="Popularity rating based on clicks" className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-1 text-amber-300">
                           <Star className="w-3.5 h-3.5 fill-amber-400" />
                           <span>{getPostPopularityRating(currentHero).toFixed(2)}</span>
                         </div>
+                        <span className="text-slate-600">|</span>
+                        <span className="inline-flex items-center gap-1 text-cyan-300" title="Post click count">
+                          <Eye className="w-3.5 h-3.5" /> {formatPostClickCount(currentHero)}
+                        </span>
                         <span className="text-slate-600">|</span>
                         <span className="text-cyan-400">{currentHero.specs?.storage || 'Verified'}</span>
                       </div>
@@ -787,13 +787,13 @@ export default function GamePortal() {
                       <div className="pt-4 border-t border-slate-800 space-y-3">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-3">
-                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400" title="Post click count">
-                              <Eye className="w-3.5 h-3.5 text-cyan-400" /> {formatPostClickCount(post)}
-                            </span>
                             <div title="Popularity rating based on clicks" className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-amber-500/10 px-2 py-1 text-[11px] font-bold text-amber-300">
                               <Star className="w-3.5 h-3.5 fill-amber-400" />
                               <span>{getPostPopularityRating(post).toFixed(2)}</span>
                             </div>
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400" title="Post click count">
+                              <Eye className="w-3.5 h-3.5 text-cyan-400" /> {formatPostClickCount(post)}
+                            </span>
                           </div>
                           <button 
                             onClick={() => handleOpenPost(post)}
@@ -1574,14 +1574,14 @@ export default function GamePortal() {
 
                   <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
                       <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
-                      <span className="text-cyan-300 flex items-center gap-1.5" title="Post click count">
-                        <Eye className="w-4 h-4" /> {formatPostClickCount(selectedPost)} clicks
-                      </span>
-                      <span className="text-slate-700">•</span>
                       <div title="Popularity rating based on clicks" className="flex items-center gap-1.5 text-amber-400">
                         <Star className="w-4 h-4 fill-amber-400" />
                         <span className="text-sm">{getPostPopularityRating(selectedPost).toFixed(2)} / 5.00</span>
                       </div>
+                      <span className="text-slate-700">•</span>
+                      <span className="text-cyan-300 flex items-center gap-1.5" title="Post click count">
+                        <Eye className="w-4 h-4" /> {formatPostClickCount(selectedPost)} clicks
+                      </span>
                       <span className="text-slate-700">•</span>
                       <span className="text-emerald-400 flex items-center gap-1">
                         <ShieldCheck className="w-4 h-4" /> Verified Safe & Tested
