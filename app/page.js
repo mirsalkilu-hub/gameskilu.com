@@ -59,6 +59,7 @@ export default function GamePortal() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [publicPage, setPublicPage] = useState(1);
   const [adminSearchQuery, setAdminSearchQuery] = useState('');
   const [adminCategoryFilter, setAdminCategoryFilter] = useState('All');
   const [adminPage, setAdminPage] = useState(1);
@@ -464,7 +465,10 @@ export default function GamePortal() {
 
     return matchesCategory && matchesSearch;
   });
-  const visiblePosts = filteredPosts.slice(0, 30);
+  const publicPageCount = Math.max(1, Math.ceil(filteredPosts.length / 12));
+  const currentPublicPage = Math.min(publicPage, publicPageCount);
+  const publicPageStart = (currentPublicPage - 1) * 12;
+  const visiblePosts = filteredPosts.slice(publicPageStart, publicPageStart + 12);
 
   const adminCategories = [...new Set(posts.map((post) => post.category).filter(Boolean))];
   const normalizedAdminSearch = adminSearchQuery.trim().toLowerCase();
@@ -765,7 +769,10 @@ export default function GamePortal() {
                 {['All', 'News', 'Download Game', 'RPG', 'FPS'].map((cat) => (
                   <button
                     key={cat}
-                    onClick={() => setSelectedCategory(cat)}
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      setPublicPage(1);
+                    }}
                     className={`shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
                       selectedCategory === cat 
                         ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/25' 
@@ -783,7 +790,10 @@ export default function GamePortal() {
                   type="text" 
                   placeholder="Search news / games..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setPublicPage(1);
+                  }}
                   className="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-cyan-500"
                 />
               </div>
@@ -900,6 +910,37 @@ export default function GamePortal() {
                   </div>
                 ))}
               </div>
+            )}
+            {!loading && filteredPosts.length > 12 && (
+              <nav
+                aria-label="Post pagination"
+                className="mt-6 flex flex-col gap-3 border-t border-slate-800 pt-4 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <p className="text-xs text-slate-500" aria-live="polite">
+                  Showing {publicPageStart + 1}–{Math.min(publicPageStart + 12, filteredPosts.length)} of {filteredPosts.length} posts
+                </p>
+                <div className="flex items-center justify-between gap-3 sm:justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setPublicPage((page) => Math.max(1, page - 1))}
+                    disabled={currentPublicPage === 1}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-700 px-3 text-xs font-semibold text-slate-300 transition hover:border-cyan-500/50 hover:text-cyan-300 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <ChevronLeft className="h-4 w-4" /> Previous
+                  </button>
+                  <span className="whitespace-nowrap text-xs font-medium text-slate-400">
+                    {currentPublicPage} / {publicPageCount}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPublicPage((page) => Math.min(publicPageCount, page + 1))}
+                    disabled={currentPublicPage === publicPageCount}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-700 px-3 text-xs font-semibold text-slate-300 transition hover:border-cyan-500/50 hover:text-cyan-300 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Next <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </nav>
             )}
           </main>
         )}
