@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabaseClient';
 import AdsterraBanner from "@/components/AdsterraBanner";
@@ -41,8 +41,14 @@ import {
   HardDrive,
   Monitor,
   Activity,
-  Layers
+  Layers,
+  Eye
 } from 'lucide-react';
+
+const getPostClickCount = (post) => Math.max(0, Number(post?.click_count) || 0);
+const getPostPopularityRating = (post) => Math.min(5, 4 + getPostClickCount(post) / 100);
+const formatPostClickCount = (post) =>
+  new Intl.NumberFormat('id-ID').format(getPostClickCount(post));
 
 export default function GamePortal() {
   const [posts, setPosts] = useState([]);
@@ -56,6 +62,7 @@ export default function GamePortal() {
   const [adminPage, setAdminPage] = useState(1);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+  const trackedSharedPostId = React.useRef(null);
 
   // State Modal Edit Post
   const [editingPost, setEditingPost] = useState(null);
@@ -129,6 +136,36 @@ export default function GamePortal() {
     setMeta('meta[name="twitter:image"]', image);
   };
 
+  const recordPostClick = useCallback(async (post) => {
+    const { data, error } = await supabase.rpc('increment_post_click_count', {
+      target_post_id: post.id,
+    });
+
+    if (error) {
+      console.error('Error recording post click:', error.message);
+      return;
+    }
+
+    const clickCount = Number(data);
+    if (!Number.isFinite(clickCount)) return;
+
+    setPosts((currentPosts) => currentPosts.map((currentPost) => (
+      currentPost.id === post.id
+        ? { ...currentPost, click_count: clickCount }
+        : currentPost
+    )));
+    setSelectedPost((currentPost) => (
+      currentPost?.id === post.id
+        ? { ...currentPost, click_count: clickCount }
+        : currentPost
+    ));
+  }, []);
+
+  const handleOpenPost = useCallback((post) => {
+    setSelectedPost(post);
+    recordPostClick(post);
+  }, [recordPostClick]);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -160,13 +197,20 @@ export default function GamePortal() {
     const params = new URLSearchParams(window.location.search);
     const postId = params.get('post');
 
-    if (!postId) return;
+    if (!postId) {
+      trackedSharedPostId.current = null;
+      return;
+    }
 
     const currentPost = posts.find((post) => String(post.id) === String(postId));
     if (currentPost) {
       syncSocialMeta(currentPost);
+      if (trackedSharedPostId.current !== postId) {
+        trackedSharedPostId.current = postId;
+        handleOpenPost(currentPost);
+      }
     }
-  }, [posts]);
+  }, [posts, handleOpenPost]);
 
   const featuredPosts = posts.slice(0, 3);
   const currentHero = featuredPosts[activeHeroIdx] || featuredPosts[0];
@@ -599,17 +643,21 @@ export default function GamePortal() {
 
                     <div className="flex flex-wrap items-center gap-4 pt-3">
                       <button 
-                        onClick={() => setSelectedPost(currentHero)}
+                        onClick={() => handleOpenPost(currentHero)}
                         className="w-full sm:w-auto justify-center px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-black font-black text-sm shadow-xl shadow-cyan-500/30 transition-all flex items-center gap-2"
                       >
                         <Download className="w-4 h-4 fill-black" /> {currentHero.type === 'game' ? 'Get Game / Read Review' : 'Read Article'}
                       </button>
 
                       <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-3 rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2.5 text-[11px] font-bold text-slate-300 backdrop-blur-md">
-                        <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-1 text-amber-300">
+                        <div title="Rating popularitas berdasarkan jumlah klik" className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-1 text-amber-300">
                           <Star className="w-3.5 h-3.5 fill-amber-400" />
-                          <span>{currentHero.rating ? Number(currentHero.rating).toFixed(1) : '5.0'}</span>
+                          <span>{getPostPopularityRating(currentHero).toFixed(2)}</span>
                         </div>
+                        <span className="text-slate-600">|</span>
+                        <span className="inline-flex items-center gap-1 text-cyan-300" title="Jumlah klik postingan">
+                          <Eye className="w-3.5 h-3.5" /> {formatPostClickCount(currentHero)}
+                        </span>
                         <span className="text-slate-600">|</span>
                         <span className="text-cyan-400">{currentHero.specs?.storage || 'Verified'}</span>
                       </div>
@@ -741,13 +789,17 @@ export default function GamePortal() {
                       {/* BAHAGIAN KONGSI SOSIAL MEDIA & BACA DENGAN TELITI */}
                       <div className="pt-4 border-t border-slate-800 space-y-3">
                         <div className="flex items-center justify-between gap-2">
-                          <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-amber-500/10 px-2 py-1 text-[11px] font-bold text-amber-300">
+                          <div title="Rating popularitas berdasarkan jumlah klik" className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-amber-500/10 px-2 py-1 text-[11px] font-bold text-amber-300">
                             <Star className="w-3.5 h-3.5 fill-amber-400" />
-                            <span>{post.rating ? Number(post.rating).toFixed(1) : '5.0'}</span>
+                            <span>{getPostPopularityRating(post).toFixed(2)}</span>
                           </div>
 
+                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400" title="Jumlah klik postingan">
+                            <Eye className="w-3.5 h-3.5 text-cyan-400" /> {formatPostClickCount(post)}
+                          </span>
+
                           <button 
-                            onClick={() => setSelectedPost(post)}
+                            onClick={() => handleOpenPost(post)}
                             className="flex items-center gap-1 text-[11px] font-bold text-cyan-400 hover:text-cyan-300"
                           >
                             Read More <ExternalLink className="w-3.5 h-3.5" />
@@ -1184,6 +1236,7 @@ export default function GamePortal() {
                       <th className="p-4">Category</th>
                       <th className="p-4">Genre</th>
                       <th className="p-4">Publish Date</th>
+                      <th className="p-4 text-center">Clicks</th>
                       <th className="p-4 text-center w-32">Actions</th>
                     </tr>
                   </thead>
@@ -1191,7 +1244,7 @@ export default function GamePortal() {
                   <tbody className="divide-y divide-slate-800/60">
                     {filteredAdminPosts.length === 0 ? (
                       <tr>
-                        <td colSpan="5" className="p-8 text-center text-slate-500 text-xs font-medium">
+                        <td colSpan="6" className="p-8 text-center text-slate-500 text-xs font-medium">
                           {posts.length === 0 ? 'Belum ada postingan yang dibuat.' : 'Tidak ada postingan yang cocok dengan filter.'}
                         </td>
                       </tr>
@@ -1230,6 +1283,11 @@ export default function GamePortal() {
                           </td>
                           <td className="p-4 text-xs text-slate-400 font-mono">
                             {p.date}
+                          </td>
+                          <td className="p-4 text-center text-xs font-semibold text-cyan-300">
+                            <span className="inline-flex items-center justify-center gap-1.5">
+                              <Eye className="h-3.5 w-3.5" /> {formatPostClickCount(p)}
+                            </span>
                           </td>
                           <td className="p-4">
                             <div className="flex items-center justify-center gap-2">
@@ -1518,11 +1576,15 @@ export default function GamePortal() {
                   </h2>
 
                   <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
-                    <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
-                      <div className="flex items-center gap-1.5 text-amber-400">
+                      <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
+                      <div title="Rating popularitas berdasarkan jumlah klik" className="flex items-center gap-1.5 text-amber-400">
                         <Star className="w-4 h-4 fill-amber-400" />
-                        <span className="text-sm">{selectedPost.rating ? Number(selectedPost.rating).toFixed(1) : '5.0'} / 5.0</span>
+                        <span className="text-sm">{getPostPopularityRating(selectedPost).toFixed(2)} / 5.00</span>
                       </div>
+                      <span className="text-slate-700">•</span>
+                      <span className="text-cyan-300 flex items-center gap-1.5" title="Jumlah klik postingan">
+                        <Eye className="w-4 h-4" /> {formatPostClickCount(selectedPost)} klik
+                      </span>
                       <span className="text-slate-700">•</span>
                       <span className="text-emerald-400 flex items-center gap-1">
                         <ShieldCheck className="w-4 h-4" /> Verified Safe & Tested
