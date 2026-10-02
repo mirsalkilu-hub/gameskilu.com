@@ -23,6 +23,8 @@ import {
   Flame,
   ChevronRight,
   ChevronLeft,
+  ArrowUp,
+  ArrowDown,
   TrendingUp,
   Loader2,
   Edit3,
@@ -60,6 +62,7 @@ export default function GamePortal() {
   const [adminSearchQuery, setAdminSearchQuery] = useState('');
   const [adminCategoryFilter, setAdminCategoryFilter] = useState('All');
   const [adminPage, setAdminPage] = useState(1);
+  const [isReorderingPosts, setIsReorderingPosts] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const trackedSharedPostId = React.useRef(null);
@@ -174,6 +177,7 @@ export default function GamePortal() {
         const { data, error } = await supabase
           .from('posts')
           .select('*')
+          .order('sort_order', { ascending: true })
           .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -212,7 +216,12 @@ export default function GamePortal() {
     }
   }, [posts, handleOpenPost]);
 
-  const featuredPosts = posts.slice(0, 3);
+  const featuredPosts = [...posts]
+    .sort((firstPost, secondPost) => (
+      (Number(firstPost.sort_order) || 0) - (Number(secondPost.sort_order) || 0)
+      || new Date(secondPost.created_at) - new Date(firstPost.created_at)
+    ))
+    .slice(0, 3);
   const currentHero = featuredPosts[activeHeroIdx] || featuredPosts[0];
 
   const handleLogin = (e) => {
@@ -279,6 +288,7 @@ export default function GamePortal() {
     e.preventDefault();
 
     const postPayload = {
+      sort_order: Math.min(0, ...posts.map((post) => Number(post.sort_order) || 0)) - 1,
       title: newPost.title,
       category: newPost.category,
       game_genre: newPost.gameGenre,
@@ -402,6 +412,43 @@ export default function GamePortal() {
       } catch (err) {
         notify(`Failed to delete post: ${err.message}`, 'error');
       }
+    }
+  };
+
+  const handleMovePost = async (post, direction) => {
+    setIsReorderingPosts(true);
+
+    try {
+      const { error } = await supabase.rpc('move_post', {
+        target_post_id: post.id,
+        move_direction: direction,
+      });
+
+      if (error) throw error;
+
+      setPosts((currentPosts) => {
+        const postIndex = currentPosts.findIndex((currentPost) => currentPost.id === post.id);
+        const neighborIndex = postIndex + (direction === 'up' ? -1 : 1);
+        if (postIndex < 0 || neighborIndex < 0 || neighborIndex >= currentPosts.length) return currentPosts;
+
+        const reorderedPosts = [...currentPosts];
+        const currentSortOrder = currentPosts[postIndex].sort_order;
+        const neighborSortOrder = currentPosts[neighborIndex].sort_order;
+        reorderedPosts[postIndex] = {
+          ...currentPosts[neighborIndex],
+          sort_order: currentSortOrder,
+        };
+        reorderedPosts[neighborIndex] = {
+          ...currentPosts[postIndex],
+          sort_order: neighborSortOrder,
+        };
+        return reorderedPosts;
+      });
+      notify('Post order updated.');
+    } catch (err) {
+      notify(`Failed to change post order: ${err.message}`, 'error');
+    } finally {
+      setIsReorderingPosts(false);
     }
   };
 
@@ -1234,7 +1281,7 @@ export default function GamePortal() {
                       <th className="p-4">Genre</th>
                       <th className="p-4">Publish Date</th>
                       <th className="p-4 text-center">Clicks</th>
-                      <th className="p-4 text-center w-32">Actions</th>
+                      <th className="p-4 text-center w-44">Actions</th>
                     </tr>
                   </thead>
                   
@@ -1288,6 +1335,28 @@ export default function GamePortal() {
                           </td>
                           <td className="p-4">
                             <div className="flex items-center justify-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleMovePost(p, 'up')}
+                                disabled={isReorderingPosts || posts[posts.findIndex((post) => post.id === p.id) - 1] === undefined}
+                                className="rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-2 text-cyan-300 transition hover:bg-cyan-500/20 disabled:cursor-not-allowed disabled:opacity-30"
+                                title="Move post up"
+                                aria-label={`Move ${p.title} up`}
+                              >
+                                <ArrowUp className="h-4 w-4" />
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleMovePost(p, 'down')}
+                                disabled={isReorderingPosts || posts[posts.findIndex((post) => post.id === p.id) + 1] === undefined}
+                                className="rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-2 text-cyan-300 transition hover:bg-cyan-500/20 disabled:cursor-not-allowed disabled:opacity-30"
+                                title="Move post down"
+                                aria-label={`Move ${p.title} down`}
+                              >
+                                <ArrowDown className="h-4 w-4" />
+                              </button>
+
                               <button 
                                 onClick={() => handleOpenEditModal(p)}
                                 className="p-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl transition-all duration-200 active:scale-95"
