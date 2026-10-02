@@ -225,6 +225,16 @@ export default function GamePortal() {
     .slice(0, 3);
   const currentHero = featuredPosts[activeHeroIdx] || featuredPosts[0];
 
+  useEffect(() => {
+    if (featuredPosts.length < 2) return;
+
+    const intervalId = window.setInterval(() => {
+      setActiveHeroIdx((currentIndex) => (currentIndex + 1) % featuredPosts.length);
+    }, 5000);
+
+    return () => window.clearInterval(intervalId);
+  }, [featuredPosts.length]);
+
   const handleLogin = (e) => {
     e.preventDefault();
     if (loginForm.username === 'admin' && loginForm.password === 'K@ira123') {
