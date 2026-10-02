@@ -29,6 +29,20 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Admin Access
+
+Apply the SQL migrations in `supabase/migrations` to configure post ordering and admin access.
+
+Create an admin user in Supabase Authentication, then add its user UUID to the private allowlist from the Supabase SQL Editor:
+
+```sql
+insert into public.admin_users (user_id)
+values ('30d4176d-d540-4100-b7cc-c036f20e7f08')
+on conflict (user_id) do nothing;
+```
+
+Only users in `public.admin_users` can create, edit, delete, or reorder posts. Public visitors can continue to read posts. Disable public sign-ups in Supabase Authentication settings if only invited admin accounts should exist.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
