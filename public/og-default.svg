@@ -1,44 +1,53 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="80" y1="40" x2="1120" y2="590" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#020817"/>
-      <stop offset="0.5" stop-color="#0F172A"/>
-      <stop offset="1" stop-color="#111827"/>
+    <linearGradient id="background" x1="105" y1="28" x2="1090" y2="610" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#090B18"/>
+      <stop offset=".52" stop-color="#10152A"/>
+      <stop offset="1" stop-color="#17112C"/>
     </linearGradient>
-    <linearGradient id="panel" x1="190" y1="120" x2="990" y2="510" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#22D3EE" stop-opacity="0.3"/>
-      <stop offset="0.5" stop-color="#3B82F6" stop-opacity="0.18"/>
-      <stop offset="1" stop-color="#A855F7" stop-opacity="0.22"/>
+    <linearGradient id="panel" x1="145" y1="105" x2="1074" y2="525" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#13243A"/>
+      <stop offset=".55" stop-color="#171B36"/>
+      <stop offset="1" stop-color="#211738"/>
     </linearGradient>
-    <linearGradient id="brand" x1="221" y1="170" x2="518" y2="473" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#67E8F9"/>
-      <stop offset="0.5" stop-color="#38BDF8"/>
-      <stop offset="1" stop-color="#8B5CF6"/>
+    <linearGradient id="tile" x1="30" y1="16" x2="226" y2="239" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#54218E"/>
+      <stop offset=".5" stop-color="#176C9E"/>
+      <stop offset="1" stop-color="#06BFD0"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="59" y1="71" x2="202" y2="183" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5F0FF"/>
+      <stop offset=".32" stop-color="#B794FF"/>
+      <stop offset=".68" stop-color="#37D9EC"/>
+      <stop offset="1" stop-color="#E3FCFF"/>
     </linearGradient>
   </defs>
 
-  <rect width="1200" height="630" rx="32" fill="url(#bg)"/>
-  <circle cx="1030" cy="120" r="200" fill="#22D3EE" fill-opacity="0.08"/>
-  <circle cx="150" cy="515" r="190" fill="#A855F7" fill-opacity="0.12"/>
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <path d="M0 504 1200 104v526H0V504Z" fill="#111A31" fill-opacity=".68"/>
+  <path d="M0 504 1200 104" stroke="#37D9EC" stroke-opacity=".18" stroke-width="2"/>
+  <rect x="90" y="72" width="1020" height="486" rx="28" fill="url(#panel)" stroke="#6B55A2" stroke-opacity=".65"/>
+  <path d="M91 106v-6a28 28 0 0 1 28-28h220" stroke="#31D7E8" stroke-width="3"/>
 
-  <rect x="120" y="90" width="960" height="450" rx="28" fill="url(#panel)" stroke="rgba(103,232,249,0.35)"/>
+  <svg x="156" y="183" width="240" height="240" viewBox="0 0 256 256">
+    <rect x="8" y="8" width="240" height="240" rx="46" fill="url(#tile)" stroke="#52EAF3" stroke-width="5"/>
+    <rect x="17" y="17" width="222" height="222" rx="39" stroke="#E4D5FF" stroke-opacity=".92" stroke-width="3"/>
+    <path d="m128 39 74 26-6 60c-4 39-26 69-68 92-42-23-64-53-68-92l-6-60 74-26Z" fill="#17102F" fill-opacity=".42" stroke="url(#mark)" stroke-width="4" stroke-linejoin="round"/>
+    <path d="m128 51 62 22-5 51c-4 32-22 57-57 77-35-20-53-45-57-77l-5-51 62-22Z" stroke="#DCCBFF" stroke-opacity=".8" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M157 91c-8-10-19-15-32-15-23 0-39 17-39 41s16 42 39 42c21 0 35-14 37-34h-31" stroke="#241748" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M157 91c-8-10-19-15-32-15-23 0-39 17-39 41s16 42 39 42c21 0 35-14 37-34h-31" stroke="url(#mark)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M157 91c-8-10-19-15-32-15-23 0-39 17-39 41s16 42 39 42c21 0 35-14 37-34h-31" stroke="#F2FDFF" stroke-opacity=".9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M126 132c14-1 25-6 36-17l14-15-8-8 36-8-8 36-8-8-14 15c-14 15-29 22-48 23" fill="url(#mark)" stroke="#241748" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="m168 111 20-21m11-5 4-1-1 4" stroke="#F2FDFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M96 169h9m-4-4v9m49-5h4m-2-2v4" stroke="#58E6F1" stroke-width="3" stroke-linecap="round"/>
+  </svg>
 
-  <g opacity="0.95">
-    <rect x="180" y="150" width="220" height="220" rx="48" fill="url(#brand)"/>
-    <rect x="214" y="182" width="152" height="156" rx="28" fill="#020817" fill-opacity="0.14"/>
-    <path d="M287 212H350C383.137 212 410 238.863 410 272V324C410 357.137 383.137 384 350 384H287V330H338C348.493 330 357 321.493 357 311V285C357 274.507 348.493 266 338 266H287V212ZM287 266H330V330H287V266Z" fill="#F8FAFC" fill-opacity="0.95"/>
-  </g>
-
-  <text x="470" y="255" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="72" letter-spacing="4">gameskilu</text>
-  <text x="470" y="310" fill="#7DD3FC" font-family="Arial, Helvetica, sans-serif" font-size="26" letter-spacing="10" font-weight="700">.com</text>
-
-  <text x="470" y="385" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="44">Gaming News &amp; PC Game Downloads</text>
-  <text x="470" y="445" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="24">Trusted, fast, and verified gaming content</text>
-
-  <g>
-    <rect x="470" y="485" width="210" height="18" rx="9" fill="#22D3EE" fill-opacity="0.38"/>
-    <rect x="470" y="485" width="146" height="18" rx="9" fill="#22D3EE"/>
-    <circle cx="1048" cy="495" r="8" fill="#34D399"/>
-    <text x="1068" y="503" fill="#A7F3D0" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">LIVE</text>
-  </g>
+  <text x="450" y="220" fill="#56DDEA" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" letter-spacing="5">PORTAL GAMING</text>
+  <text x="446" y="307" fill="#F5F2FF" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="800">gameskilu</text>
+  <text x="790" y="307" fill="#55DDEB" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">.com</text>
+  <path d="M450 337h540" stroke="#FFFFFF" stroke-opacity=".12"/>
+  <text x="450" y="393" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">Berita dan rilisan game terbaru</text>
+  <text x="450" y="439" fill="#C8C7D8" font-family="Arial, Helvetica, sans-serif" font-size="27">Download PC terverifikasi</text>
+  <rect x="450" y="477" width="202" height="42" rx="21" fill="#0C3447" stroke="#35D8E8" stroke-opacity=".45"/>
+  <text x="476" y="504" fill="#9AF4F4" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" letter-spacing="1.5">GAMESKILU.COM</text>
 </svg>

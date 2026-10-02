@@ -109,7 +109,7 @@ export default function GamePortal() {
 
     const title = `${post.title || 'gameskilu.com'} | gameskilu.com`;
     const description = post.content ? post.content.replace(/<[^>]*>/g, '').slice(0, 160) : 'Portal berita game terbaru dan link download PC game aman.';
-    const image = post.image || 'https://gameskilu.com/og-default.png';
+    const image = 'https://gameskilu.com/og-default.png?v=2';
 
     document.title = title;
 
@@ -239,8 +239,6 @@ export default function GamePortal() {
 
     const shareUrlObj = new URL(window.location.origin);
     shareUrlObj.searchParams.set('post', String(post.id));
-    if (post.image) shareUrlObj.searchParams.set('shareImage', post.image);
-    if (post.title) shareUrlObj.searchParams.set('shareTitle', post.title);
 
     const shareUrl = encodeURIComponent(shareUrlObj.toString());
     const shareText = encodeURIComponent(`Lihat postingan ini di gameskilu.com: ${post.title}`);

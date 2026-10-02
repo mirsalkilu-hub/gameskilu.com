@@ -39,7 +39,7 @@ export const metadata = {
       "Portal berita game terbaru, ulasan hardware, dan tempat download PC game gratis, aman, serta terverifikasi.",
     images: [
       {
-        url: "https://gameskilu.com/og-default.png",
+        url: "https://gameskilu.com/og-default.png?v=2",
         width: 1200,
         height: 630,
         alt: "gameskilu.com gaming news and download portal",
@@ -52,7 +52,7 @@ export const metadata = {
     description:
       "Portal berita game terbaru, ulasan hardware, dan tempat download PC game gratis, aman, serta terverifikasi.",
     images: [
-      "https://gameskilu.com/og-default.png",
+      "https://gameskilu.com/og-default.png?v=2",
     ],
   },
 };
