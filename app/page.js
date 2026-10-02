@@ -78,7 +78,8 @@ export default function GamePortal() {
   // Copy link state
   const [copiedId, setCopiedId] = useState(null);
 
-  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [notification, setNotification] = useState(null);
 
   const notify = (message, type = 'success') => {
@@ -91,6 +92,45 @@ export default function GamePortal() {
     const timeoutId = window.setTimeout(() => setNotification(null), 4500);
     return () => window.clearTimeout(timeoutId);
   }, [notification]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const verifyAdminSession = async (session) => {
+      if (!session) {
+        if (isMounted) {
+          setIsLoggedIn(false);
+          setCurrentView('public');
+        }
+        return;
+      }
+
+      const { data: hasAdminAccess, error } = await supabase.rpc('is_admin');
+      if (!isMounted) return;
+
+      if (error || !hasAdminAccess) {
+        setIsLoggedIn(false);
+        setCurrentView('public');
+        if (!error) await supabase.auth.signOut();
+        return;
+      }
+
+      setIsLoggedIn(true);
+    };
+
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => verifyAdminSession(session))
+      .catch((error) => console.error('Error restoring admin session:', error.message));
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      window.setTimeout(() => verifyAdminSession(session), 0);
+    });
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   // State Form New Post
   const [newPost, setNewPost] = useState({
@@ -225,19 +265,48 @@ export default function GamePortal() {
     .slice(0, 3);
   const currentHero = featuredPosts[activeHeroIdx] || featuredPosts[0];
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (loginForm.username === 'admin' && loginForm.password === 'K@ira123') {
+
+    setIsAuthenticating(true);
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: loginForm.email.trim(),
+        password: loginForm.password,
+      });
+
+      if (signInError) throw signInError;
+
+      const { data: hasAdminAccess, error: accessError } = await supabase.rpc('is_admin');
+      if (accessError) {
+        await supabase.auth.signOut();
+        throw accessError;
+      }
+
+      if (!hasAdminAccess) {
+        await supabase.auth.signOut();
+        notify('This account is not authorized to access the admin panel.', 'error');
+        return;
+      }
+
       setIsLoggedIn(true);
       setCurrentView('admin-dashboard');
-      setLoginForm({ username: '', password: '' });
+      setLoginForm({ email: '', password: '' });
       notify('Signed in as admin.');
-    } else {
-      notify('Invalid username or password.', 'error');
+    } catch (error) {
+      notify(error.message || 'Unable to sign in.', 'error');
+    } finally {
+      setIsAuthenticating(false);
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      notify(`Failed to sign out: ${error.message}`, 'error');
+      return;
+    }
+
     setIsLoggedIn(false);
     setCurrentView('public');
     notify('You have signed out of the admin panel.');
@@ -959,22 +1028,24 @@ export default function GamePortal() {
 
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Username</label>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">Email</label>
                   <input 
-                    type="text" 
+                    type="email"
                     required
-                    value={loginForm.username}
-                    onChange={(e) => setLoginForm({...loginForm, username: e.target.value})}
+                    autoComplete="username"
+                    value={loginForm.email}
+                    onChange={(e) => setLoginForm({...loginForm, email: e.target.value})}
                     className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:outline-none focus:border-cyan-500"
-                    placeholder="Enter username"
+                    placeholder="Enter admin email"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-slate-300 mb-1">Password</label>
                   <input 
-                    type="password" 
+                    type="password"
                     required
+                    autoComplete="current-password"
                     value={loginForm.password}
                     onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
                     className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:outline-none focus:border-cyan-500"
@@ -984,10 +1055,11 @@ export default function GamePortal() {
 
                 <button 
                   type="submit" 
+                  disabled={isAuthenticating}
                   className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 px-4 py-3 text-sm font-black uppercase tracking-[0.2em] text-slate-950 shadow-[0_0_32px_rgba(34,211,238,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_42px_rgba(59,130,246,0.45)] active:scale-[0.99]"
                 >
                   <span className="absolute inset-0 bg-white/15 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-                  <span className="relative z-10">Sign In</span>
+                  <span className="relative z-10">{isAuthenticating ? 'Signing In...' : 'Sign In'}</span>
                 </button>
               </form>
             </div>
