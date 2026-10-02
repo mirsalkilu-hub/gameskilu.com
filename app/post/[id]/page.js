@@ -39,7 +39,7 @@ export async function generateMetadata({ params }) {
 
   const title = `${post.title || 'Gaming post'} | gameskilu.com`;
   const description = getDescription(post.content);
-  const image = post.image || defaultImage;
+  const image = defaultImage;
   const url = `https://gameskilu.com/post/${post.id}`;
 
   return {
