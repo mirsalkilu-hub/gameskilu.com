@@ -58,8 +58,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const adsenseClient =
-    process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-7149552867300544";
   const adsterraScriptUrl = process.env.NEXT_PUBLIC_ADSTERRA_SCRIPT_URL;
 
   return (
@@ -68,14 +66,6 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <head>
-        {adsenseClient && (
-          <Script
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
-
         <Script
           src="https://awkwardmonopoly.com/20/18/63/201863e19025f3e3a9bb97ff8f3d4bc0.js"
           strategy="afterInteractive"
