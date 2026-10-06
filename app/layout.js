@@ -67,7 +67,8 @@ export default function RootLayout({ children }) {
     >
       <head>
         <Script
-          src="https://awkwardmonopoly.com/20/18/63/201863e19025f3e3a9bb97ff8f3d4bc0.js"
+          data-cfasync="false"
+          src="https://accountut.com/1/201863e19025f3e3a9bb97ff8f3d4bc0"
           strategy="afterInteractive"
         />
 
