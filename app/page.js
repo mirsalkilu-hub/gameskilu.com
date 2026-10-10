@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
+import { getPostSocialImage } from '@/lib/postSocialMetadata';
 import AdsterraBanner from "@/components/AdsterraBanner";
 import { 
   Download, 
@@ -154,7 +155,7 @@ export default function GamePortal() {
 
     const title = `${post.title || 'gameskilu.com'} | gameskilu.com`;
     const description = post.content ? post.content.replace(/<[^>]*>/g, '').slice(0, 160) : 'The latest gaming news and safe PC game downloads.';
-    const image = 'https://gameskilu.com/og-default.png?v=2';
+    const image = getPostSocialImage(post.image);
 
     document.title = title;
 
@@ -174,7 +175,9 @@ export default function GamePortal() {
     setMeta('meta[property="og:title"]', title);
     setMeta('meta[property="og:description"]', description);
     setMeta('meta[property="og:image"]', image);
-    setMeta('meta[property="og:url"]', `${window.location.origin}${window.location.pathname}?post=${post.id}`);
+    setMeta('meta[property="og:image:secure_url"]', image);
+    setMeta('meta[property="og:image:alt"]', post.title || 'gameskilu.com post');
+    setMeta('meta[property="og:url"]', `${window.location.origin}/post/${encodeURIComponent(post.id)}`);
     setMeta('meta[name="twitter:card"]', 'summary_large_image', 'content');
     setMeta('meta[name="twitter:title"]', title);
     setMeta('meta[name="twitter:description"]', description);
