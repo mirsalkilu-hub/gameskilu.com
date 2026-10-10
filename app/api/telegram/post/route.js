@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import { getPostSocialImage } from '@/lib/postSocialMetadata';
 
 export const runtime = 'nodejs';
 
@@ -62,7 +63,7 @@ export async function POST(request) {
 
   const { data: post, error: postError } = await supabase
     .from('posts')
-    .select('id, title, content, image, category')
+    .select('id, title, image')
     .eq('id', postId)
     .maybeSingle();
 
@@ -75,25 +76,17 @@ export async function POST(request) {
   }
 
   const postUrl = `https://gameskilu.com/post/${post.id}`;
-  const summary = (post.content || '')
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
   const title = (post.title || 'New gameskilu.com post').slice(0, 200);
-  const category = post.category ? `Category: ${post.category}`.slice(0, 100) : '';
-  const fixedCaption = [title, category, postUrl].filter(Boolean).join('\n\n');
-  const summaryLimit = Math.max(0, 1024 - fixedCaption.length - 2);
-  const caption = [title, category, summary.slice(0, summaryLimit), postUrl]
-    .filter(Boolean)
-    .join('\n\n');
-  const telegramMethod = post.image ? 'sendPhoto' : 'sendMessage';
-  const telegramBody = post.image
-    ? { chat_id: channelId, photo: post.image, caption }
-    : { chat_id: channelId, text: caption };
+  const caption = `${title}\n${postUrl}`;
+  const telegramBody = {
+    chat_id: channelId,
+    photo: getPostSocialImage(post.image),
+    caption,
+  };
 
   let telegramResponse;
   try {
-    telegramResponse = await fetch(`https://api.telegram.org/bot${botToken}/${telegramMethod}`, {
+    telegramResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(telegramBody),
