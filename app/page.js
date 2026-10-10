@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import AdsterraBanner from "@/components/AdsterraBanner";
 import { 
@@ -922,12 +923,12 @@ export default function GamePortal() {
                               <Eye className="w-3.5 h-3.5 text-cyan-400" /> {formatPostClickCount(post)}
                             </span>
                           </div>
-                          <button 
-                            onClick={() => handleOpenPost(post)}
+                          <Link
+                            href={`/post/${encodeURIComponent(post.id)}`}
                             className="flex items-center gap-1 text-[11px] font-bold text-cyan-400 hover:text-cyan-300"
                           >
                             Read More <ExternalLink className="w-3.5 h-3.5" />
-                          </button>
+                          </Link>
                         </div>
 
                         {/* Social sharing buttons */}
