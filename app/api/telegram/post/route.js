@@ -63,7 +63,7 @@ export async function POST(request) {
 
   const { data: post, error: postError } = await supabase
     .from('posts')
-    .select('id, image')
+    .select('id, title, image')
     .eq('id', postId)
     .maybeSingle();
 
@@ -76,10 +76,13 @@ export async function POST(request) {
   }
 
   const postUrl = `https://gameskilu.com/post/${post.id}`;
+  const title = (post.title || '').trim() || 'Gaming post';
+  const titleLimit = 1024 - postUrl.length - 2;
+  const caption = `${title.slice(0, titleLimit)}\n\n${postUrl}`;
   const telegramBody = {
     chat_id: channelId,
     photo: getPostSocialImage(post.image),
-    caption: postUrl,
+    caption,
   };
 
   let telegramResponse;
