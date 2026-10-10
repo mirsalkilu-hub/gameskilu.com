@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import PostViewStats from '@/components/PostViewStats';
-import { getPostSocialImage } from '@/lib/postSocialMetadata';
+import { getPostShareUrl, getPostSocialImage } from '@/lib/postSocialMetadata';
 import { getYouTubeEmbedUrl } from '@/lib/youtube';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -42,7 +42,8 @@ export async function generateMetadata({ params }) {
   const title = `${post.title || 'Gaming post'} | gameskilu.com`;
   const description = getDescription(post.content);
   const image = getPostSocialImage(post.image);
-  const url = `https://gameskilu.com/post/${post.id}`;
+  const imageAlt = post.title || 'gameskilu.com post';
+  const url = getPostShareUrl(post.id);
 
   return {
     title,
@@ -54,13 +55,13 @@ export async function generateMetadata({ params }) {
       siteName: 'gameskilu.com',
       title,
       description,
-      images: [{ url: image, alt: post.title || 'gameskilu.com post' }],
+      images: [{ url: image, secureUrl: image, alt: imageAlt }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [image],
+      images: [{ url: image, alt: imageAlt }],
     },
   };
 }
@@ -72,7 +73,7 @@ export default async function PostPage({ params }) {
   if (!post) notFound();
 
   const title = post.title || 'Gaming post';
-  const shareUrl = `https://gameskilu.com/post/${post.id}`;
+  const shareUrl = getPostShareUrl(post.id);
   const shareText = `Check out this post on gameskilu.com: ${title}`;
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedText = encodeURIComponent(shareText);

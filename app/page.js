@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
-import { getPostSocialImage } from '@/lib/postSocialMetadata';
+import { getPostShareUrl, getPostSocialImage } from '@/lib/postSocialMetadata';
 import { getYouTubeEmbedUrl } from '@/lib/youtube';
 import AdsterraBanner from "@/components/AdsterraBanner";
 import { 
@@ -179,11 +179,12 @@ export default function GamePortal() {
     setMeta('meta[property="og:image"]', image);
     setMeta('meta[property="og:image:secure_url"]', image);
     setMeta('meta[property="og:image:alt"]', post.title || 'gameskilu.com post');
-    setMeta('meta[property="og:url"]', `${window.location.origin}/post/${encodeURIComponent(post.id)}`);
+    setMeta('meta[property="og:url"]', getPostShareUrl(post.id));
     setMeta('meta[name="twitter:card"]', 'summary_large_image', 'content');
     setMeta('meta[name="twitter:title"]', title);
     setMeta('meta[name="twitter:description"]', description);
     setMeta('meta[name="twitter:image"]', image);
+    setMeta('meta[name="twitter:image:alt"]', post.title || 'gameskilu.com post');
   };
 
   const recordPostClick = useCallback(async (post) => {
@@ -322,7 +323,7 @@ export default function GamePortal() {
   const handleShare = (platform, post, e) => {
     if (e) e.stopPropagation();
 
-    const shareUrlObj = new URL(`/post/${encodeURIComponent(post.id)}`, window.location.origin);
+    const shareUrlObj = new URL(getPostShareUrl(post.id));
 
     const shareUrl = encodeURIComponent(shareUrlObj.toString());
     const shareText = encodeURIComponent(`Check out this post on gameskilu.com: ${post.title}`);
