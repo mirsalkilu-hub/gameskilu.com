@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { getPostSocialImage } from '@/lib/postSocialMetadata';
+import { getYouTubeEmbedUrl } from '@/lib/youtube';
 import AdsterraBanner from "@/components/AdsterraBanner";
 import { 
   Download, 
@@ -141,6 +142,7 @@ export default function GamePortal() {
     gameGenre: 'Action',
     type: 'news',
     image: '',
+    youtubeUrl: '',
     content: '',
     downloadUrl: '',
     os: '',
@@ -361,6 +363,11 @@ export default function GamePortal() {
   const handleCreatePost = async (e) => {
     e.preventDefault();
 
+    if (newPost.youtubeUrl && !getYouTubeEmbedUrl(newPost.youtubeUrl)) {
+      notify('Enter a valid YouTube video URL.', 'error');
+      return;
+    }
+
     const postPayload = {
       sort_order: Math.min(0, ...posts.map((post) => Number(post.sort_order) || 0)) - 1,
       title: newPost.title,
@@ -369,6 +376,7 @@ export default function GamePortal() {
       type: newPost.type,
       date: new Date().toISOString().split('T')[0],
       image: newPost.image || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
+      youtube_url: newPost.youtubeUrl.trim() || null,
       content: newPost.content,
       download_url: newPost.downloadUrl,
       specs: newPost.type === 'game' ? {
@@ -399,6 +407,7 @@ export default function GamePortal() {
           gameGenre: 'Action',
           type: 'news',
           image: '',
+          youtubeUrl: '',
           content: '',
           downloadUrl: '',
           os: '',
@@ -448,6 +457,7 @@ export default function GamePortal() {
       gameGenre: post.game_genre || post.gameGenre || 'Action',
       type: post.type || 'news',
       image: post.image || '',
+      youtubeUrl: post.youtube_url || '',
       content: post.content || '',
       downloadUrl: post.download_url || post.downloadUrl || '',
       rating: post.rating || 5.0,
@@ -462,12 +472,18 @@ export default function GamePortal() {
   const handleUpdatePost = async (e) => {
     e.preventDefault();
 
+    if (editForm.youtubeUrl && !getYouTubeEmbedUrl(editForm.youtubeUrl)) {
+      notify('Enter a valid YouTube video URL.', 'error');
+      return;
+    }
+
     const updatedPayload = {
       title: editForm.title,
       category: editForm.category,
       game_genre: editForm.gameGenre,
       type: editForm.type,
       image: editForm.image,
+      youtube_url: editForm.youtubeUrl.trim() || null,
       content: editForm.content,
       download_url: editForm.downloadUrl,
       rating: Number(editForm.rating) || 5.0,
@@ -567,6 +583,7 @@ export default function GamePortal() {
   const currentPublicPage = Math.min(publicPage, publicPageCount);
   const publicPageStart = (currentPublicPage - 1) * 12;
   const visiblePosts = filteredPosts.slice(publicPageStart, publicPageStart + 12);
+  const selectedPostYouTubeEmbedUrl = getYouTubeEmbedUrl(selectedPost?.youtube_url);
 
   const adminCategories = [...new Set(posts.map((post) => post.category).filter(Boolean))];
   const normalizedAdminSearch = adminSearchQuery.trim().toLowerCase();
@@ -1244,6 +1261,20 @@ export default function GamePortal() {
                   </div>
                 </div>
 
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                    YouTube Video URL <span className="font-normal normal-case text-slate-500">(optional)</span>
+                  </label>
+                  <input
+                    type="url"
+                    value={newPost.youtubeUrl}
+                    onChange={(e) => setNewPost({ ...newPost, youtubeUrl: e.target.value })}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder-slate-600 transition focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500/50"
+                  />
+                  <p className="text-xs text-slate-500">Add a YouTube video to display on this post&apos;s detail page.</p>
+                </div>
+
                 {/* Game specifications */}
                 {newPost.type === 'game' && (
                   <div className="p-5 bg-slate-950 rounded-2xl border border-purple-500/30 space-y-4 shadow-lg shadow-purple-950/20">
@@ -1637,6 +1668,19 @@ export default function GamePortal() {
                   </div>
                 </div>
 
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-300">
+                    YouTube Video URL <span className="text-slate-500">(optional)</span>
+                  </label>
+                  <input
+                    type="url"
+                    value={editForm.youtubeUrl}
+                    onChange={(e) => setEditForm({ ...editForm, youtubeUrl: e.target.value })}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    className="w-full rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-white focus:border-rose-500 focus:outline-none"
+                  />
+                </div>
+
                 {editForm.type === 'news' && (
                   <div>
                     <label className="block text-xs font-medium text-slate-300 mb-1">News Link URL</label>
@@ -1778,6 +1822,25 @@ export default function GamePortal() {
                     </div>
                   </div>
                 </div>
+
+                {selectedPostYouTubeEmbedUrl && (
+                  <div className="border-b border-slate-800 bg-slate-950 p-4 sm:p-6">
+                    <div className="mb-3 flex items-center gap-2 text-sm font-bold text-white">
+                      <span className="text-rose-400" aria-hidden="true">▶</span> YouTube video
+                    </div>
+                    <div className="aspect-video overflow-hidden rounded-xl border border-white/10 bg-black">
+                      <iframe
+                        src={selectedPostYouTubeEmbedUrl}
+                        title={`${selectedPost.title || 'Post'} YouTube video`}
+                        className="h-full w-full"
+                        loading="lazy"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <div className="p-6 sm:p-8 space-y-6">
                   <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight leading-tight">

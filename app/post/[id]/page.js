@@ -4,6 +4,7 @@ import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import PostViewStats from '@/components/PostViewStats';
 import { getPostSocialImage } from '@/lib/postSocialMetadata';
+import { getYouTubeEmbedUrl } from '@/lib/youtube';
 import { supabase } from '@/lib/supabaseClient';
 
 const getPost = cache(async (id) => {
@@ -75,6 +76,7 @@ export default async function PostPage({ params }) {
   const shareText = `Check out this post on gameskilu.com: ${title}`;
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedText = encodeURIComponent(shareText);
+  const youtubeEmbedUrl = getYouTubeEmbedUrl(post.youtube_url);
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-950 font-sans text-slate-100 selection:bg-cyan-500 selection:text-black">
@@ -95,99 +97,152 @@ export default async function PostPage({ params }) {
         </nav>
       </header>
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-        <article className="mx-auto max-w-4xl overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/90 shadow-2xl shadow-black/30">
-          <div className="border-b border-slate-800 px-5 py-5 sm:px-8">
-            <Link href="/" className="text-sm font-semibold text-cyan-300 transition hover:text-cyan-200">
-              &larr; Back to gameskilu.com
-            </Link>
-          </div>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-7 sm:px-6 sm:py-10 lg:px-8">
+        <div className="mx-auto max-w-5xl">
+          <Link href="/" className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-400 transition hover:text-cyan-300">
+            <span aria-hidden="true">←</span> All posts
+          </Link>
 
-          {post.image && (
-            <div className="relative h-56 bg-slate-800 sm:h-96">
-              <Image
-                src={post.image}
-                alt={title}
-                fill
-                unoptimized
-                sizes="(max-width: 640px) 100vw, 896px"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
-            </div>
-          )}
-
-          <div className="space-y-6 p-5 sm:p-8">
-            <div className="flex flex-wrap items-center gap-2 text-xs">
-              {post.category && (
-                <span className={`rounded-full px-3 py-1 font-bold uppercase tracking-wide ${
-                  post.type === 'game' ? 'bg-purple-500/20 text-purple-200' : 'bg-cyan-500/20 text-cyan-200'
-                }`}>
-                  {post.category}
-                </span>
+          <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/80 shadow-2xl shadow-cyan-950/20 ring-1 ring-white/[0.03]">
+            <header className="relative isolate flex min-h-[390px] items-end overflow-hidden bg-gradient-to-br from-slate-900 via-cyan-950 to-purple-950 sm:min-h-[500px]">
+              {post.image && (
+                <Image
+                  src={post.image}
+                  alt={title}
+                  fill
+                  unoptimized
+                  sizes="(max-width: 640px) 100vw, 1024px"
+                  className="-z-20 object-cover"
+                />
               )}
-              {(post.game_genre || post.gameGenre) && (
-                <span className="rounded-full border border-slate-700 px-3 py-1 text-slate-300">
-                  {post.game_genre || post.gameGenre}
-                </span>
-              )}
-              {post.date && <time className="text-slate-400">{post.date}</time>}
-            </div>
+              <div className="absolute inset-0 -z-10 bg-gradient-to-t from-slate-950 via-slate-950/65 to-slate-950/10" />
+              <div className="absolute inset-0 -z-10 bg-gradient-to-r from-slate-950/70 via-transparent to-purple-950/20" />
 
-            <h1 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-5xl">
-              {title}
-            </h1>
+              <div className="w-full space-y-5 p-6 sm:p-10 lg:p-12">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={`rounded-full border px-3.5 py-1.5 text-[11px] font-black uppercase tracking-[0.16em] shadow-lg backdrop-blur ${
+                    post.type === 'game'
+                      ? 'border-purple-300/30 bg-purple-500/20 text-purple-100'
+                      : 'border-cyan-300/30 bg-cyan-500/20 text-cyan-100'
+                  }`}>
+                    {post.category || (post.type === 'game' ? 'Download Game' : 'Gaming News')}
+                  </span>
+                  {(post.game_genre || post.gameGenre) && (
+                    <span className="rounded-full border border-white/15 bg-black/30 px-3.5 py-1.5 text-[11px] font-bold text-slate-200 backdrop-blur">
+                      {post.game_genre || post.gameGenre}
+                    </span>
+                  )}
+                  {post.date && (
+                    <time className="rounded-full border border-white/15 bg-black/30 px-3.5 py-1.5 text-[11px] font-semibold text-slate-200 backdrop-blur">
+                      {post.date}
+                    </time>
+                  )}
+                </div>
 
-            <PostViewStats postId={post.id} initialClickCount={post.click_count} />
+                <h1 className="max-w-4xl text-3xl font-black leading-[1.08] tracking-tight text-white drop-shadow-lg sm:text-5xl lg:text-6xl">
+                  {title}
+                </h1>
 
-            {post.content && (
-              <div className="whitespace-pre-wrap break-words border-t border-slate-800 pt-6 text-base leading-8 text-slate-300">
-                {post.content}
+                <div className="inline-flex rounded-2xl border border-white/10 bg-slate-950/55 px-4 py-3 backdrop-blur-md">
+                  <PostViewStats postId={post.id} initialClickCount={post.click_count} />
+                </div>
               </div>
-            )}
+            </header>
 
-            {post.specs && (
-              <section className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
-                <h2 className="mb-4 text-lg font-bold text-white">Minimum Specs</h2>
-                <dl className="grid gap-3 text-sm sm:grid-cols-2">
-                  {[
-                    ['OS', post.specs.os],
-                    ['CPU', post.specs.cpu],
-                    ['RAM', post.specs.ram],
-                    ['GPU', post.specs.gpu],
-                    ['Storage', post.specs.storage],
-                  ].filter(([, value]) => value).map(([label, value]) => (
-                    <div key={label} className="rounded-xl border border-slate-800 bg-slate-900 p-3">
-                      <dt className="font-bold text-cyan-300">{label}</dt>
-                      <dd className="mt-1 text-slate-200">{value}</dd>
+            <div className="grid gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-10 lg:p-10">
+              <div className="min-w-0 space-y-8">
+                {youtubeEmbedUrl && (
+                  <section className="overflow-hidden rounded-2xl border border-rose-400/20 bg-slate-950 shadow-xl shadow-black/25">
+                    <div className="flex items-center gap-2 border-b border-white/5 px-4 py-3">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-500/15 text-rose-300" aria-hidden="true">▶</span>
+                      <h2 className="text-sm font-bold text-white">Watch video</h2>
                     </div>
-                  ))}
-                </dl>
-              </section>
-            )}
+                    <div className="aspect-video bg-black">
+                      <iframe
+                        src={youtubeEmbedUrl}
+                        title={`${title} YouTube video`}
+                        className="h-full w-full"
+                        loading="lazy"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+                  </section>
+                )}
 
-            {(post.download_url || post.downloadUrl) && (
-              <a
-                href={post.download_url || post.downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 px-5 py-4 text-center font-black text-slate-950 transition hover:brightness-110"
-              >
-                {post.type === 'game' ? 'DOWNLOAD GAME NOW' : 'READ FULL ARTICLE'}
-              </a>
-            )}
+                {post.content && (
+                  <section className="rounded-2xl border border-white/[0.07] bg-slate-950/40 p-5 sm:p-7">
+                    <div className="mb-5 flex items-center gap-3">
+                      <span className="h-7 w-1 rounded-full bg-gradient-to-b from-cyan-400 to-purple-500" />
+                      <h2 className="text-lg font-extrabold text-white">About this post</h2>
+                    </div>
+                    <div className="whitespace-pre-wrap break-words text-[15px] leading-8 text-slate-300 sm:text-base">
+                      {post.content}
+                    </div>
+                  </section>
+                )}
 
-            <section className="border-t border-slate-800 pt-5">
-              <h2 className="mb-3 text-sm font-bold text-slate-300">Share this post</h2>
-              <div className="flex flex-wrap gap-2 text-sm">
-                <a className="rounded-lg bg-slate-800 px-3 py-2 hover:bg-slate-700" href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} target="_blank" rel="noopener noreferrer">Facebook</a>
-                <a className="rounded-lg bg-slate-800 px-3 py-2 hover:bg-slate-700" href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`} target="_blank" rel="noopener noreferrer">X</a>
-                <a className="rounded-lg bg-slate-800 px-3 py-2 hover:bg-slate-700" href={`https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-                <a className="rounded-lg bg-slate-800 px-3 py-2 hover:bg-slate-700" href={`https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`} target="_blank" rel="noopener noreferrer">Telegram</a>
+                {post.specs && (
+                  <section className="rounded-2xl border border-purple-400/15 bg-gradient-to-br from-purple-950/30 to-slate-950/70 p-5 sm:p-7">
+                    <div className="mb-5 flex items-center justify-between gap-3 border-b border-white/[0.07] pb-4">
+                      <h2 className="flex items-center gap-2 text-lg font-extrabold text-white">
+                        <span className="text-purple-300" aria-hidden="true">⚙</span> Minimum PC specs
+                      </h2>
+                      <span className="rounded-full border border-purple-300/15 bg-purple-400/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-200">Requirements</span>
+                    </div>
+                    <dl className="grid gap-3 sm:grid-cols-2">
+                      {[
+                        ['OS', post.specs.os],
+                        ['CPU', post.specs.cpu],
+                        ['RAM', post.specs.ram],
+                        ['GPU', post.specs.gpu],
+                        ['Storage', post.specs.storage],
+                      ].filter(([, value]) => value).map(([label, value]) => (
+                        <div key={label} className="rounded-xl border border-white/[0.06] bg-slate-900/80 p-3.5">
+                          <dt className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-purple-300">{label}</dt>
+                          <dd className="mt-1.5 break-words text-sm font-medium text-slate-200">{value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </section>
+                )}
               </div>
-            </section>
-          </div>
-        </article>
+
+              <aside className="space-y-5">
+                {(post.download_url || post.downloadUrl) && (
+                  <section className="rounded-2xl border border-cyan-300/20 bg-gradient-to-br from-cyan-950/70 via-slate-900 to-purple-950/50 p-5 shadow-lg shadow-cyan-950/20">
+                    <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-cyan-300">
+                      {post.type === 'game' ? 'Ready to play?' : 'More information'}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                      {post.type === 'game' ? 'Continue to the game download.' : 'Open the original article or source.'}
+                    </p>
+                    <a
+                      href={post.download_url || post.downloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-5 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-purple-500 px-4 py-3 text-center text-xs font-black uppercase tracking-wider text-slate-950 shadow-lg shadow-cyan-500/15 transition hover:-translate-y-0.5 hover:brightness-110"
+                    >
+                      {post.type === 'game' ? '↓ Download game' : '↗ Read full article'}
+                    </a>
+                  </section>
+                )}
+
+                <section className="rounded-2xl border border-white/[0.07] bg-slate-950/50 p-5">
+                  <h2 className="text-sm font-bold text-white">Share this post</h2>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-500">Send this gaming post to your friends.</p>
+                  <div className="mt-4 grid grid-cols-2 gap-2">
+                    <a className="rounded-xl border border-white/[0.07] bg-slate-900 px-3 py-2.5 text-center text-xs font-semibold text-slate-300 transition hover:border-blue-400/40 hover:text-white" href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} target="_blank" rel="noopener noreferrer">Facebook</a>
+                    <a className="rounded-xl border border-white/[0.07] bg-slate-900 px-3 py-2.5 text-center text-xs font-semibold text-slate-300 transition hover:border-sky-400/40 hover:text-white" href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`} target="_blank" rel="noopener noreferrer">X / Twitter</a>
+                    <a className="rounded-xl border border-white/[0.07] bg-slate-900 px-3 py-2.5 text-center text-xs font-semibold text-slate-300 transition hover:border-emerald-400/40 hover:text-white" href={`https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                    <a className="rounded-xl border border-white/[0.07] bg-slate-900 px-3 py-2.5 text-center text-xs font-semibold text-slate-300 transition hover:border-cyan-400/40 hover:text-white" href={`https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`} target="_blank" rel="noopener noreferrer">Telegram</a>
+                  </div>
+                </section>
+              </aside>
+            </div>
+          </article>
+        </div>
       </main>
 
       <footer className="mt-16 border-t border-slate-800/80 bg-slate-900 text-sm text-slate-400">
