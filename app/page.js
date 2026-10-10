@@ -390,7 +390,8 @@ export default function GamePortal() {
       if (error) throw error;
 
       if (data && data.length > 0) {
-        setPosts([data[0], ...posts]);
+        const createdPost = data[0];
+        setPosts([createdPost, ...posts]);
         setActiveHeroIdx(0);
         setNewPost({
           title: '',
@@ -406,7 +407,31 @@ export default function GamePortal() {
           gpu: '',
           storage: ''
         });
-        notify('Post published successfully.');
+
+        try {
+          const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+          if (sessionError) throw sessionError;
+          if (!session?.access_token) throw new Error('Admin session is unavailable.');
+
+          const telegramResponse = await fetch('/api/telegram/post', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ postId: createdPost.id }),
+          });
+          const telegramResult = await telegramResponse.json();
+
+          if (!telegramResponse.ok) {
+            throw new Error(telegramResult.error || 'Telegram could not send the post.');
+          }
+
+          notify('Post published and sent to Telegram.');
+        } catch (telegramError) {
+          console.error('Telegram delivery failed:', telegramError.message);
+          notify(`Post published, but Telegram delivery failed: ${telegramError.message}`, 'error');
+        }
       }
     } catch (err) {
       notify(`Failed to save post: ${err.message}`, 'error');
