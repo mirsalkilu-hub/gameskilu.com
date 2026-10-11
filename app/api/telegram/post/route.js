@@ -7,6 +7,42 @@ export const runtime = 'nodejs';
 const jsonError = (message, status) =>
   NextResponse.json({ error: message }, { status });
 
+async function uploadTelegramPhoto({ botToken, chatId, caption, imageUrl }) {
+  const imageResponse = await fetch(imageUrl, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (compatible; gameskilu-telegram-bot/1.0)',
+      Accept: 'image/*,*/*;q=0.8',
+    },
+    cache: 'no-store',
+  });
+
+  if (!imageResponse.ok) {
+    throw new Error(`Unable to fetch the post image (${imageResponse.status}).`);
+  }
+
+  const contentType = imageResponse.headers.get('content-type') || 'image/jpeg';
+  const buffer = Buffer.from(await imageResponse.arrayBuffer());
+
+  if (!buffer.length) {
+    throw new Error('The post image was empty.');
+  }
+
+  const formData = new FormData();
+  formData.append('chat_id', chatId);
+  formData.append('caption', caption);
+  formData.append(
+    'photo',
+    new Blob([buffer], { type: contentType }),
+    `post-${Date.now()}.jpg`
+  );
+
+  return fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+    method: 'POST',
+    body: formData,
+    cache: 'no-store',
+  });
+}
+
 export async function POST(request) {
   const authorization = request.headers.get('authorization');
   const accessToken = authorization?.match(/^Bearer\s+(.+)$/i)?.[1];
@@ -79,23 +115,18 @@ export async function POST(request) {
   const title = (post.title || '').trim() || 'Gaming post';
   const titleLimit = 1024 - postUrl.length - 2;
   const caption = `${title.slice(0, titleLimit)}\n\n${postUrl}`;
-  const telegramBody = {
-    chat_id: channelId,
-    photo: getPostSocialImage(post.image),
-    caption,
-  };
 
   let telegramResponse;
   try {
-    telegramResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(telegramBody),
-      cache: 'no-store',
+    telegramResponse = await uploadTelegramPhoto({
+      botToken,
+      chatId: channelId,
+      caption,
+      imageUrl: getPostSocialImage(post.image),
     });
-  } catch {
-    console.error('Could not reach the Telegram Bot API.');
-    return jsonError('Could not reach the Telegram Bot API. Try again later.', 502);
+  } catch (error) {
+    console.error('Could not build Telegram photo payload:', error.message);
+    return jsonError('Could not prepare the Telegram post image. Try again later.', 502);
   }
 
   const telegramResult = await telegramResponse.json();
