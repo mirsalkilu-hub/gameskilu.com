@@ -43,6 +43,12 @@ on conflict (user_id) do nothing;
 
 Only users in `public.admin_users` can create, edit, delete, or reorder posts. Public visitors can continue to read posts. Disable public sign-ups in Supabase Authentication settings if only invited admin accounts should exist.
 
+## Ezoic Ads
+
+The Ezoic loader is disabled by default. After the site is approved and integrated in Ezoic, set `NEXT_PUBLIC_EZOIC_ADS_ENABLED=true` in `.env.local` for local testing and in the deployment environment for production. Rebuild/redeploy after changing this setting.
+
+This only loads Ezoic's standalone Ads script; it does not create ad placements. Follow Ezoic's dashboard instructions to add the `ezstandalone` initialization, generated placeholder IDs, and matching placement elements before expecting ads to appear. Complete any domain/DNS integration steps requested by Ezoic in its dashboard. Existing ad scripts remain unchanged.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

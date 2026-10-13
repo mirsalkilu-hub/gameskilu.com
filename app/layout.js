@@ -59,6 +59,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   const adsterraScriptUrl = process.env.NEXT_PUBLIC_ADSTERRA_SCRIPT_URL;
+  const ezoicAdsEnabled = process.env.NEXT_PUBLIC_EZOIC_ADS_ENABLED === "true";
 
   return (
     <html
@@ -75,6 +76,13 @@ export default function RootLayout({ children }) {
         {adsterraScriptUrl && (
           <Script
             src={adsterraScriptUrl}
+            strategy="afterInteractive"
+          />
+        )}
+
+        {ezoicAdsEnabled && (
+          <Script
+            src="https://www.ezojs.com/ezoic/sa.min.js"
             strategy="afterInteractive"
           />
         )}
