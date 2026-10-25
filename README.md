@@ -43,6 +43,20 @@ on conflict (user_id) do nothing;
 
 Only users in `public.admin_users` can create, edit, delete, or reorder posts. Public visitors can continue to read posts. Disable public sign-ups in Supabase Authentication settings if only invited admin accounts should exist.
 
+## Automatic social publishing
+
+When an admin creates a news or game download post, the site sends it to the configured Telegram channel and Facebook Page. Facebook publishing requires a Page access token with permission to create Page posts (typically `pages_manage_posts`) and the Facebook Page ID.
+
+Set these server-side environment variables in `.env.local` for local development and in the production deployment settings:
+
+```text
+FACEBOOK_PAGE_ID=your-page-id
+FACEBOOK_PAGE_ACCESS_TOKEN=your-page-access-token
+FACEBOOK_GRAPH_API_VERSION=v24.0
+```
+
+`FACEBOOK_GRAPH_API_VERSION` is optional and defaults to `v24.0`. Keep the Page access token private and never use a `NEXT_PUBLIC_` prefix for it. If Facebook or Telegram publishing fails, the post remains saved on the site and the admin notification reports the failed delivery.
+
 ## Ezoic Ads
 
 The Ezoic loader is disabled by default. After the site is approved and integrated in Ezoic, set `NEXT_PUBLIC_EZOIC_ADS_ENABLED=true` in `.env.local` for local testing and in the deployment environment for production. Rebuild/redeploy after changing this setting.

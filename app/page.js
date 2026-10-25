@@ -423,24 +423,44 @@ export default function GamePortal() {
           if (sessionError) throw sessionError;
           if (!session?.access_token) throw new Error('Admin session is unavailable.');
 
-          const telegramResponse = await fetch('/api/telegram/post', {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${session.access_token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ postId: createdPost.id }),
-          });
-          const telegramResult = await telegramResponse.json();
+          const deliveries = await Promise.all([
+            ['Telegram', '/api/telegram/post'],
+            ['Facebook', '/api/facebook/post'],
+          ].map(async ([platform, endpoint]) => {
+            try {
+              const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${session.access_token}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ postId: createdPost.id }),
+              });
+              const result = await response.json();
 
-          if (!telegramResponse.ok) {
-            throw new Error(telegramResult.error || 'Telegram could not send the post.');
+              if (!response.ok) {
+                throw new Error(result.error || `${platform} could not send the post.`);
+              }
+
+              return { platform, error: null };
+            } catch (error) {
+              console.error(`${platform} delivery failed:`, error.message);
+              return { platform, error: error.message };
+            }
+          }));
+
+          const failures = deliveries.filter((delivery) => delivery.error);
+          if (failures.length) {
+            notify(
+              `Post published, but ${failures.map(({ platform, error }) => `${platform}: ${error}`).join('; ')}`,
+              'error'
+            );
+          } else {
+            notify('Post published and sent to Telegram and Facebook.');
           }
-
-          notify('Post published and sent to Telegram.');
-        } catch (telegramError) {
-          console.error('Telegram delivery failed:', telegramError.message);
-          notify(`Post published, but Telegram delivery failed: ${telegramError.message}`, 'error');
+        } catch (socialError) {
+          console.error('Social delivery failed:', socialError.message);
+          notify(`Post published, but social delivery failed: ${socialError.message}`, 'error');
         }
       }
     } catch (err) {
