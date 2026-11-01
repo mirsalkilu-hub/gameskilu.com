@@ -59,9 +59,9 @@ FACEBOOK_GRAPH_API_VERSION=v24.0
 
 ## Ezoic Ads
 
-The Ezoic loader is disabled by default. After the site is approved and integrated in Ezoic, set `NEXT_PUBLIC_EZOIC_ADS_ENABLED=true` in `.env.local` for local testing and in the deployment environment for production. Rebuild/redeploy after changing this setting.
+Ezoic's consent manager, standalone Ads loader, and analytics script are disabled by default. After the site is approved and integrated in Ezoic, set `NEXT_PUBLIC_EZOIC_ADS_ENABLED=true` in `.env.local` for local testing and in the deployment environment for production. Rebuild/redeploy after changing this setting.
 
-This only loads Ezoic's standalone Ads script; it does not create ad placements. Follow Ezoic's dashboard instructions to add the `ezstandalone` initialization, generated placeholder IDs, and matching placement elements before expecting ads to appear. The `/ads.txt` route redirects to Ezoic's ads.txt manager; confirm the domain is added to the Ezoic account and that `https://www.gameskilu.com/ads.txt` returns the seller list after deployment. Complete any domain/DNS integration steps requested by Ezoic in its dashboard. Existing ad scripts remain unchanged.
+This queues `ezstandalone.showAds({})` after the page is interactive; it does not create ad placements. Follow Ezoic's dashboard instructions to add generated placeholder IDs and matching placement elements before expecting ads to appear. The `/ads.txt` route redirects to Ezoic's ads.txt manager; confirm the domain is added to the Ezoic account and that `https://www.gameskilu.com/ads.txt` returns the seller list after deployment. Complete any domain/DNS integration steps requested by Ezoic in its dashboard. Existing ad scripts remain unchanged.
 
 ## Deploy on Vercel
 
